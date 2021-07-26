@@ -1,0 +1,9 @@
+# windows thumbnail cache
+Thumbs.db
+
+# Mac DS_Store Files
+.DS_Store
+
+# Another stuff
+package-lock.json
+node_modules/
