@@ -5,11 +5,15 @@ const port = 3000;
 const router = require('./routes');
 const handlebars = require('express-handlebars');
 
+// backend setup
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-//app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname,'/public/')));
+
+// Use .handlebars as front-end view
 app.engine('handlebars', handlebars({
 	layoutsDir: __dirname + '/views/layouts/',
+	partialsDir: __dirname + '/views/partials/'
 }));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', '.handlebars');
