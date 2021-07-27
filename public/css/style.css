@@ -82,7 +82,8 @@ body {
 	background-image: url('../images/bg-index.jpeg');
   background-repeat: no-repeat;
   background-size: cover;
-	min-height: 78vh;
+	background-position: bottom;
+	min-height: 70vh;
 	overflow: hidden;
 }
 
@@ -97,5 +98,6 @@ body {
 }
 .m-less-b {
 	font-weight: 300;
+	font-size: 1em;
 	color: #efefef;
 }

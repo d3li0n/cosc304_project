@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-	res.status(200).render('index', { title: '' });
+	res.status(200).render('index', { title: 'Home' });
 });
 
 router.get('/store', (req, res) => {
@@ -30,7 +30,7 @@ router.post('/product/:id/addCart', (req, res) => {
 });
 
 router.get('*', (req, res) => {
-	res.status(404).render('index', { title: 'Page Not Found' });
+	res.status(404).render('error', { title: 'Page Not Found' });
 });
 
 module.exports = router;
