@@ -10,15 +10,30 @@ router.get('/store', (req, res) => {
 	const categories = [
 		"Air", "Water", "Fire", "Earth"
 	];
-	const prodLengthBool = false;
+	const productsList = {
+		1: {
+			imgUrl: "fire_ash_1.jpg",
+			title: "Fire Ash From Volcano",
+			price: (Math.round(21.35 * 100) / 100).toFixed(2)
+		},
+		2: {
+			imgUrl: "fire_ash_1.jpg",
+			title: "Fire Ash From Volcano",
+			price: (Math.round(400.50 * 100) / 100).toFixed(2)
+		}
+	};
+
+	const prodLengthBool = (Object.keys(productsList).length) ? true : false;
 	res.status(200).render('store', { title: 'Store',
 																		categoriesList: categories, 
 																		isEmptyList: prodLengthBool, 
-																		products: null });
+																		products: productsList });
 });
 
 router.get('/cart', (req, res) => {
 	// showcart.js
+
+	res.status(200).render('cart', { title: 'My Cart' });
 });
 
 router.get('/checkout', (req, res) => {
