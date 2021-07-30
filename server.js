@@ -22,4 +22,4 @@ app.set('view engine', '.handlebars');
 app.use('/', router);
 
 // Listen Server on specific port
-app.listen(port, () => console.log(`Listening app on port: ${port}`));
+app.listen(process.env.PORT || port, () => console.log(`Listening app on port: ${port}`));
