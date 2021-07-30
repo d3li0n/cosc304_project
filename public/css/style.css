@@ -70,7 +70,7 @@ body {
 	font-weight: 400;
 }
 
-.nav-header-link:hover {
+.nav-header-link:hover, .category-store-link:hover {
 	color: #F19953 !important;
 }
 
@@ -100,4 +100,48 @@ body {
 	font-weight: 300;
 	font-size: 1em;
 	color: #efefef;
+}
+
+#admin-title-sm {
+	font-weight: 500 !important;
+	font-size: 0.9em !important;
+	color: #b8bcc9 !important;
+}
+
+.admin-title-sm-info {
+	font-size: 2em;
+	font-weight: 600;
+	line-height: 1.2;
+}
+
+.adm-link-content { 
+	text-decoration: none !important;
+}
+
+a {
+	text-decoration: none !important;
+}
+
+.adm-orders-table-legend {
+	font-weight: 600;
+	color: #b8bcc9 !important;
+}
+
+.img-store-sm {
+	width: 150px;
+	height: auto;
+}
+
+.store-item-legend-title {
+	font-size: 0.75em;
+	font-weight: 600;
+}
+
+.store-item-title-sm {
+	line-height: 1.2;
+}
+
+.shop-btn-add-cart:hover {
+	background-color: #F19953 !important;
+	color: #fff !important;
 }

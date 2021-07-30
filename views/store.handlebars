@@ -1,0 +1,36 @@
+<div class="w-75 mx-auto mb-5 mt-5">
+	<div class="row">
+		<div class="col-sm-2">
+			<p class="fw-bold text-secondary mb-2">Departments</p>
+			<div class="store-categories w-50 px-3">
+				{{#each categoriesList}}
+				<a href="/store?category={{this}}" class="text-dark d-block mb-2 category-store-link">{{this}}</a>
+				{{/each}}
+			</div>
+		</div>
+		<div class="col-sm-10">
+			<div class="row">
+				<div class="col-sm-6 mb-4">
+					<div class="store-item d-inline-flex">
+						<div class="img-container">
+							<img src="/images/store_images/fire_ash_1.jpg" alt="" class="rounded d-block img-store-sm">
+						</div>
+						<div class="store-item-prod-desc p-2">
+							<span class="store-item-legend-title text-secondary">Product Name</span><br />
+							<a class="fw-bold fs-4 store-item-title-sm text-dark" href="/product/{id}">Ash From Volcano</a><br />
+
+							<a class="btn btn-outline-light shop-btn-add-cart text-dark" href="/"><i class="far fa-star me-2"></i>Add to Cart</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6 mb-4">
+					<div class="store-item d-block">
+						<div class="img-container">
+							<img src="/images/store_images/fire_ash_1.jpg" alt="" class="rounded d-block img-store-sm">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
