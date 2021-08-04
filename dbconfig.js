@@ -16,14 +16,16 @@ const sqlConfig = {
   }
 };
 
-async function test() {
- try {
-  // make sure that any items are correctly URL encoded in the connection string
-  await sql.connect(sqlConfig)
-	console.log('tesst');
- } catch (err) {
-  console.log(err)
- }
-}
+module.exports = {
+	sqlConfig : sqlConfig,
 
-module.exports = test;
+	async testConnection() {
+		try {
+		 // make sure that any items are correctly URL encoded in the connection string
+		 await sql.connect(sqlConfig);
+		 console.log('Successfully Connected to Database.');
+		} catch (err) {
+		 console.log('Failed to Connect to Database.');
+		}
+	}
+};

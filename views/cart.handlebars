@@ -6,7 +6,7 @@
 	<div class="mt-2 cart-title fw-bold fs-3 d-block">
 		My Shopping Cart
 	</div>
-
+	{{#if isCart }}
 	<div class="cart-block row mt-4">
 		<div class="col-sm-7 py-2">
 			<div class="row align-items-start border-bottom cart-block-legend">
@@ -66,15 +66,16 @@
 					</div>
 				</div>
 			</div>
-			<a class="mt-3 btn cart-btn-checkout-cart text-uppercase fw-bold p-3 d-block">Checkout</a>
+			<a class="mt-3 btn cart-btn-checkout-cart text-uppercase fw-bold p-3 d-block" href="/cart/checkout">Checkout</a>
 
 			<div class="info-err-cart mt-2">
 				<p class="text-center text-danger">* Credit Card Information Must Be Added To Account</p>
 			</div>
 		</div>
 	</div>
-
+	{{else}}
 	<div class="empty-errList mt-5">
 		<p class="text-center fw-bold fs-5">Currently, you don't have any items in your cart. 😥</p>
 	</div>
+	{{/if}}
 </div>

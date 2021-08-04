@@ -163,3 +163,39 @@ a {
 	font-size: 0.9em;
 	font-weight: 500;
 }
+
+
+.lgn-input {
+    background-color: #F3E5F5;
+    border-radius: 50px !important;
+    padding: 12px 15px 12px 15px !important;
+    width: 100%;
+    box-sizing: border-box;
+    border: none !important;
+    font-size: 16px !important;
+    color: #000 !important;
+    font-weight: 400;
+}
+
+.lgn-input:focus,
+.lgn-input:focus {
+    -moz-box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+    outline-width: 0;
+    font-weight: 400;
+}
+
+.btn-color {
+    border-radius: 50px;
+    color: #fff;
+    background-color: #F19953;
+    padding: 15px;
+    cursor: pointer;
+    border: none !important;
+    margin-top: 40px
+}
+
+.fa-search:hover {
+	cursor: pointer;
+}

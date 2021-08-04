@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const cartController = require('./controllers/CartController');
 
 router.get('/', (req, res) => {
 	res.status(200).render('index', { title: 'Home' });
@@ -32,20 +33,22 @@ router.get('/store', (req, res) => {
 
 router.get('/cart', (req, res) => {
 	// showcart.js
-
-	res.status(200).render('cart', { title: 'My Cart' });
+	res.status(200).render('cart', { title: 'My Cart', isCart: (req.session.productsList) ? true : false });
 });
 
-router.get('/checkout', (req, res) => {
+router.get('/cart/checkout', (req, res) => {
 	// checkout.js
-});
 
-router.post('/checkout/order', (req, res) => {
-	// order.js
+	const cartResponse = cartController.cartCheckout(req.session);
+	res.status(200).render('cartCheckout', { title: 'Checkout', response: cartResponse });
 });
 
 router.get('/product/:id', (req, res) => {
 	// listprod.js
+});
+
+router.get('/login', (req, res) => {
+	res.status(200).render('loginPage', { title: 'Login' });
 });
 
 router.post('/product/:id/addCart', (req, res) => {
@@ -111,7 +114,6 @@ router.get('/admin/products', (req, res) => {
 router.get('/admin', (req, res) => {
 	res.status(200).render('admin', { title: 'Admin Portal' });
 });
-
 
 router.get('*', (req, res) => {
 	res.status(404).render('error', { title: 'Page Not Found' });
