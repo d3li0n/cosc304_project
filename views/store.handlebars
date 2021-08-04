@@ -1,0 +1,42 @@
+<div class="w-75 mx-auto mb-5 mt-5">
+	<div class="row">
+		<div class="col-sm-2">
+			<p class="fw-bold text-secondary mb-2">Departments</p>
+			<div class="store-categories w-50 px-3">
+				{{#each categoriesList}}
+				<a href="/store?category={{this}}" class="text-dark d-block mb-2 category-store-link">{{this}}</a>
+				{{/each}}
+			</div>
+		</div>
+		<div class="col-sm-10">
+			{{#if isEmptyList}}
+			<div class="row">
+				{{#each products}}
+				<div class="col-sm-6 mb-4">
+					<div class="store-item d-inline-flex">
+						<div class="img-container">
+							<img src="/images/store_images/{{this.imgUrl}}" alt="" class="rounded d-block img-store-sm">
+						</div>
+						<div class="store-item-prod-desc p-2">
+							<span class="store-item-legend-title text-secondary">Product Name</span><br />
+							<a class="fw-bold fs-4 store-item-title-sm text-dark" href="/product/{{@key}}">{{this.title}}</a><br />
+							<span class="store-item-price-legend text-secondary d-block mt-5">
+								Item Price
+							</span>
+							<span class="store-item-price text-dark fw-bold fs-4 d-block mb-1">
+								${{this.price}}
+							</span>
+							<a class="btn btn-outline-light shop-btn-add-cart text-dark"><i class="far fa-star me-2"></i>Add to Cart</a>
+						</div>
+					</div>
+				</div>
+				{{/each}}
+			</div>
+			{{else}}
+			<div class="empty-errList mt-5">
+				<p class="text-center fw-bold fs-5">Currently, we don't have any items in store. 😥</p>
+			</div>
+			{{/if}}
+		</div>
+	</div>
+</div>

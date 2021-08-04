@@ -1,0 +1,69 @@
+<div class="w-75 mx-auto mb-5 mt-5">
+	<div class="back-btn mb-4">
+		<a href="/admin" class="text-dark"><i class="fas fa-chevron-left"></i> Back</a>
+	</div>
+	{{#if isEmptyList }}
+	<div class="adm-orders-table-legend">
+		<div class="row align-items-start border-bottom">
+			<div class="col">
+				Order Id
+			</div>
+			<div class="col">
+				Order Date
+			</div>
+			<div class="col">
+				Customer Id
+			</div>
+			<div class="col">
+				Customer Name
+			</div>
+			<div class="col">
+				Total amount
+			</div>
+			<div class="col">
+				Product Id(quantity)
+			</div>
+			<div class="col">
+				Price
+			</div>
+		</div>
+	</div>
+
+	<div class="adm-orders-table">
+		{{#each orders}}
+		<div class="row align-items-start mt-4 mb-4 border-bottom">
+			<div class="col">
+				#{{@key}}
+			</div>
+			<div class="col">
+				{{this.orderDate}}
+			</div>
+			<div class="col">
+				{{this.customerId}}
+			</div>
+			<div class="col">
+				{{this.customerName}}
+			</div>
+			<div class="col">
+				${{this.totalAmount}}
+			</div>
+			<div class="col">
+				{{#each this.products}}
+					<span>{{@key}} (x{{this.quantity}})</span><br />
+				{{/each}}
+			</div>
+			<div class="col">
+				{{#each this.products}}
+					<span>${{this.price}}</span><br />
+				{{/each}}
+			</div>
+		</div>
+		{{/each}}
+	</div>
+
+	{{else}}
+	<div class="empty-errList mt-5">
+		<p class="text-center fw-bold fs-5">Currently, we don't have any orders to review. 😥</p>
+	</div>
+	{{/if }}
+</div>
