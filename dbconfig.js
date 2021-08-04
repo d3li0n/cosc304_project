@@ -26,6 +26,7 @@ module.exports = {
 		 console.log('Successfully Connected to Database.');
 		} catch (err) {
 		 console.log('Failed to Connect to Database.');
+		 console.log(err);
 		}
 	}
 };
