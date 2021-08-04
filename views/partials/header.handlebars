@@ -18,7 +18,7 @@
 					</div>
 					<div class="customer-login-text">
 						<a href="/account">
-							<span class="header-login-text">Hello, <span id="header-lgnName"></span></span><br />
+							<span class="header-login-text">Hello, {{ session.userCredentials.firstName }} {{ session.userCredentials.lastName }}</span><br />
 							My Account</a>
 					</div>
 				</div>

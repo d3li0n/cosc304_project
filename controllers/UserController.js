@@ -65,11 +65,11 @@ module.exports = {
 
 				let credentials = {
 					firstName: result.recordset[0].firstName,
-					lastName: `${(result.recordset[0].lastName).substr(0, 1)}.`,
-					expiresAt: new Date(Date.now() + 7*24*60*60*1000)
+					lastName: `${(result.recordset[0].lastName).substr(0, 1)}.`
 				};
 				req.session.API_TOKEN = token;
 				req.session.isAuth = true;
+				req.session.userCredentials = credentials;
 				res.status(200).send({ data: { status: 200, message: credentials }});
 			}
 		}).catch(err => {
