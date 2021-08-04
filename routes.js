@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const cartController = require('./controllers/CartController');
+const userController = require('./controllers/UserController');
 
 router.get('/', (req, res) => {
 	res.status(200).render('index', { title: 'Home' });
@@ -47,9 +48,28 @@ router.get('/product/:id', (req, res) => {
 	// listprod.js
 });
 
-router.get('/login', (req, res) => {
-	res.status(200).render('loginPage', { title: 'Login' });
+router.get('/account', userController.validateApiToken, (req, res) => {
+
 });
+
+router.get('/login', (req, res) => {
+	if (req.session.API_TOKEN == null) {
+		res.status(200).render('loginPage', { title: 'Login' }); 
+	} else {
+		res.status(301).redirect('/');
+	}
+});
+
+router.post('/login', userController.authUser);
+
+router.post('/logout', (req, res) => {
+	if (req.session.API_TOKEN === undefined) {
+		res.status(403).send({ data: { code: 403, message: "Error: Not Authorized" }});
+	} else {
+		req.session.destroy();
+		res.status(200).send({ data: { code: 200, message: "Success." }});
+	}
+})
 
 router.post('/product/:id/addCart', (req, res) => {
 	// addcart.js

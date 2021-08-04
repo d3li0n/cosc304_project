@@ -22,9 +22,12 @@ app.use(sessions({
     secret: `${process.env.SESSION_SECRET}`,
     cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 },
     saveUninitialized: true, 
-		resave: false
+		resave: true
 }));
-
+app.use(function (req, res, next) {
+	res.locals.session = req.session;
+	next();
+});
 // Use .handlebars as front-end view
 app.engine('handlebars', handlebars({
 	layoutsDir: __dirname + '/views/layouts/',
@@ -32,10 +35,8 @@ app.engine('handlebars', handlebars({
 }));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', '.handlebars');
-
 // Keep all routes in separate file
 app.use('/', router);
-
 // Listen Server on specific port
 app.listen(process.env.PORT || port, () => console.log(`Listening app on port: ${port}`));
 dbConnection.testConnection();
