@@ -23,21 +23,22 @@
 					Price
 				</div>
 			</div>
-
+			{{#each session.productList}}
 			<div class="row align-items-start mt-4 mb-4 border-bottom">
 				<div class="col">
-					233332
+					{{@key}}
 				</div>
 				<div class="col">
-					Test Test
+					{{this.title}}
 				</div>
 				<div class="col">
-					23
+					{{this.quantity}}
 				</div>
 				<div class="col">
-					$323333.32
+					${{this.totalPrice}}
 				</div>
 			</div>
+			{{/each}}
 		</div>
 		<div class="col-sm-5">
 			<div class="cart-summary-block">

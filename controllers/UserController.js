@@ -44,7 +44,7 @@ module.exports = {
 
 		if (!isEmailValid(email))
 			res.status(401).send({ data: { status: 403, message: "Error: Email is not valid." }});
-		if (!password || password.length < 5)
+		if (!password || password.length < 1)
 			res.status(401).send({ data: { status: 403, message: "Error: Password is not valid." }});
 
 		await sql.connect(db.sqlConfig).then(pool => {

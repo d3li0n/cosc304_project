@@ -12,6 +12,7 @@ router.get('/store', (req, res) => {
 	const categories = [
 		"Air", "Water", "Fire", "Earth"
 	];
+
 	const productsList = {
 		1: {
 			imgUrl: "fire_ash_1.jpg",
@@ -34,7 +35,8 @@ router.get('/store', (req, res) => {
 
 router.get('/cart', (req, res) => {
 	// showcart.js
-	res.status(200).render('cart', { title: 'My Cart', isCart: (req.session.productsList) ? true : false });
+	// req.session.productList
+	res.status(200).render('cart', { title: 'My Cart', isCart: (req.session.productsList === undefined) ? true : false });
 });
 
 router.get('/cart/checkout', (req, res) => {
@@ -43,6 +45,8 @@ router.get('/cart/checkout', (req, res) => {
 	const cartResponse = cartController.cartCheckout(req.session);
 	res.status(200).render('cartCheckout', { title: 'Checkout', response: cartResponse });
 });
+
+router.post('/product/:id/addCart', cartController.addProduct);
 
 router.get('/product/:id', (req, res) => {
 	// listprod.js

@@ -26,12 +26,23 @@ $(document).ready(function () {
 	});
 
 	$("#shopSearchBtn").keyup(function (e) {
-		if (e.keyCode == 13)
-			window.location.href = "/store?search=" + $(this).val();
+		if (e.keyCode == 13) {
+			const urlParams = new URLSearchParams(window.location.search);
+			if (urlParams.has('category') && urlParams.get('category').length > 0) {
+				window.location.href = `/store?search=${$(this).val()}&category=${urlParams.get('category')}`;
+			} else {
+				window.location.href = `/store?search=${$(this).val()}`;
+			}
+		}
 	});
 
 	$('.fa-search').click(function(e) {  
-    window.location.href = "/store?search=" + $("#shopSearchBtn").val();
+    const urlParams = new URLSearchParams(window.location.search);
+		if (urlParams.has('category') && urlParams.get('category').length > 0) {
+			window.location.href = `/store?search=${$(this).val()}&category=${urlParams.get('category')}`;
+		} else {
+			window.location.href = `/store?search=${$(this).val()}`;
+		}
 	});
 
 	$(".btnLogin").click(function(){
@@ -52,6 +63,25 @@ $(document).ready(function () {
 					$(".log-err").css("display", "block");
 				} else {
 					window.location.href = "/";
+				}
+			}
+		});
+	});
+
+	$('.shop-btn-add-cart').click(function(e) {
+		const prodId = $(this).attr('data-prodId');
+		$.ajax({
+			type: "POST",
+			url: `/product/${prodId}/addCart`,
+			dataType: 'application/json',
+			success: function (response) {
+			}, error: function (err) {
+				let response = JSON.parse(err.responseText);
+
+				if (parseInt(response.data.status) === 403) {
+					console.log('error detected');
+				} else {
+					window.location.href = "/cart";
 				}
 			}
 		});
