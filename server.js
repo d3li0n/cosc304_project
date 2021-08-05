@@ -25,13 +25,13 @@ app.use(sessions({
     saveUninitialized: true, 
 		resave: true
 }));
+
 app.use(function (req, res, next) {
 	res.locals.session = req.session;
 	next();
 });
 
 app.use(cartController.loadCart);
-
 // Use .handlebars as front-end view
 app.engine('handlebars', handlebars({
 	layoutsDir: __dirname + '/views/layouts/',
