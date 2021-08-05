@@ -7,6 +7,7 @@ const port = 3000;
 const router = require('./routes');
 const dbConnection = require('./dbconfig');
 const handlebars = require('express-handlebars');
+const cartController = require('./controllers/CartController');
 
 const sessions = require('express-session');
 const cookieParser = require("cookie-parser");
@@ -28,6 +29,9 @@ app.use(function (req, res, next) {
 	res.locals.session = req.session;
 	next();
 });
+
+app.use(cartController.loadCart);
+
 // Use .handlebars as front-end view
 app.engine('handlebars', handlebars({
 	layoutsDir: __dirname + '/views/layouts/',

@@ -70,7 +70,7 @@ module.exports = {
 				req.session.API_TOKEN = token;
 				req.session.isAuth = true;
 				req.session.userCredentials = credentials;
-				res.status(200).send({ data: { status: 200, message: credentials }});
+				res.status(200).send({ data: { status: 200/*, message: credentials */ }});
 			}
 		}).catch(err => {
 			console.log(err);
