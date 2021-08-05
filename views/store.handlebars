@@ -4,11 +4,13 @@
 			<p class="fw-bold text-secondary mb-2">Departments</p>
 			<div class="store-categories w-50 px-3">
 				{{#each categoriesList}}
-				<a href="/store?category={{this}}" class="text-dark d-block mb-2 category-store-link">{{this}}</a>
+				<a class="text-dark d-block mb-2 category-store-link">{{this}}</a>
 				{{/each}}
 			</div>
 		</div>
 		<div class="col-sm-10">
+			<div class="search-store-title d-block fw-bold mb-4 fs-4" style="display: none;">
+			</div>
 			{{#if isEmptyList}}
 			<div class="row">
 				{{#each products}}

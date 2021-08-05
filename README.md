@@ -1,4 +1,4 @@
-# Store Name
+# Naturly
 
 
 ## Usage

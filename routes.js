@@ -53,7 +53,7 @@ router.get('/account', userController.validateApiToken, (req, res) => {
 });
 
 router.get('/login', (req, res) => {
-	if (req.session.API_TOKEN == null) {
+	if (req.session.API_TOKEN === undefined) {
 		res.status(200).render('loginPage', { title: 'Login' }); 
 	} else {
 		res.status(301).redirect('/');

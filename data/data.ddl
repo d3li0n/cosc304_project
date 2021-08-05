@@ -36,7 +36,7 @@ CREATE TABLE paymentmethod (
     paymentExpiryDate   DATE,
     customerId          INT,
     PRIMARY KEY (paymentMethodId),
-    FOREIGN KEY (customerId) REFERENCES customer(customerid)
+    FOREIGN KEY (customerId) REFERENCES customer(customerId)
         ON UPDATE CASCADE ON DELETE CASCADE 
 );
 
@@ -51,7 +51,7 @@ CREATE TABLE ordersummary (
     shiptoCountry       VARCHAR(40),
     customerId          INT,
     PRIMARY KEY (orderId),
-    FOREIGN KEY (customerId) REFERENCES customer(customerid)
+    FOREIGN KEY (customerId) REFERENCES customer(customerId)
         ON UPDATE CASCADE ON DELETE CASCADE 
 );
 

@@ -70,6 +70,10 @@ body {
 	font-weight: 400;
 }
 
+.category-store-link {
+	cursor: pointer;
+}
+
 .nav-header-link:hover, .category-store-link:hover, .store-item-title-sm:hover {
 	color: #F19953 !important;
 }
