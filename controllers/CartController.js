@@ -137,7 +137,7 @@ module.exports = {
 	},
 	cartCheckout(session) {
 		var cart = null;
-		if (session.productsList === undefined) {
+		if (session.productList === undefined || (Object.keys(session.productList).length === 0)) {
 			cart = {
 				title: "Oops, you can't do that 😥",
 				description: "Your cart is empty, and we can't process your order.",
