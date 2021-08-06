@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const cartController = require('./controllers/CartController');
 const userController = require('./controllers/UserController');
+const adminOrderController = require('./controllers/AdminOrderController');
 
 router.get('/', (req, res) => {
 	res.status(200).render('index', { title: 'Home' });
@@ -82,55 +83,7 @@ router.post('/product/:id/addCart', (req, res) => {
 router.get('/admin/users', (req, res) => {
 });
 
-router.get('/admin/orders', (req, res) => {
-	// listorders.js
-	const orderList = {
-		// Test sample. TODO: database connection feature
-		3232: {
-			orderDate: '2019-12-20 13:30:30.0',
-			customerId: 23,
-			customerName: 'Test Test',
-			totalAmount: (Math.round(91.70 * 100) / 100).toFixed(2),
-			products: {
-				1: {
-					quantity: 1,
-					price: (Math.round(18.00 * 100) / 100).toFixed(2),
-				},
-				5: {
-					quantity: 2,
-					price: (Math.round(21.35 * 100) / 100).toFixed(2),
-				},
-				10: {
-					quantity: 1,
-					price: (Math.round(31.00 * 100) / 100).toFixed(2),
-				}
-			}
-		},
-		21222: {
-			orderDate: '2019-12-20 13:30:30.0',
-			customerId: 23,
-			customerName: 'Test Test',
-			totalAmount: (Math.round(91.70 * 100) / 100).toFixed(2),
-			products: {
-				1: {
-					quantity: 1,
-					price: (Math.round(18.00 * 100) / 100).toFixed(2),
-				},
-				5: {
-					quantity: 2,
-					price: (Math.round(21.35 * 100) / 100).toFixed(2),
-				},
-				10: {
-					quantity: 1,
-					price: (Math.round(31.00 * 100) / 100).toFixed(2),
-				}
-			}
-		}
-	};
-	const listLengthBool = (Object.keys(orderList).length) ? true : false;
-
-	res.status(200).render('ordersAdmin', { title: 'Orders', isEmptyList: listLengthBool, orders: orderList });
-});
+router.get('/admin/orders', adminOrderController.loadOrders );
 
 router.get('/admin/products', (req, res) => {
 });

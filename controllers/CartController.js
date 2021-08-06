@@ -2,7 +2,6 @@ const sql = require('mssql');
 const db = require('../dbconfig');
 const jwt = require('jsonwebtoken');
 module.exports = {
-
 	loadCart(req, res, next) {
 		if (req.session.productList === undefined) {
 			req.session.productList = {};
