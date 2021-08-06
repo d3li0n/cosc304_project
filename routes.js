@@ -37,7 +37,22 @@ router.get('/store', (req, res) => {
 router.get('/cart', (req, res) => {
 	// showcart.js
 	// req.session.productList
-	res.status(200).render('cart', { title: 'My Cart', isCart: (req.session.productsList === undefined) ? true : false });
+	let t = 0;
+	let shipTotal = 0;
+	let subTotal = 0;
+	Object.keys(req.session.productList).forEach(key => {
+		//console.log(req.session.productList[key].totalPrice);
+		t += parseFloat(req.session.productList[key].totalPrice);
+	});	
+	shipTotal = (t*0.10);
+	subTotal = (t+shipTotal);
+	t = t.toFixed(2);
+	shipTotal = shipTotal.toFixed(2);
+	subTotal = subTotal.toFixed(2);
+
+	let totalArray = {total:t, shipTotal: shipTotal, subTotal: subTotal};
+	//console.log(total);
+	res.status(200).render('cart', { title: 'My Cart', isCart: (req.session.productsList === undefined) ? true : false , tArray: totalArray});
 });
 
 router.get('/cart/checkout', (req, res) => {
