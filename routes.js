@@ -39,7 +39,36 @@ router.get('/cart/checkout', cartController.cartCheckout);
 router.post('/product/:id/addCart', cartController.addProduct);
 
 router.get('/product/:id', (req, res) => {
-	// listprod.js
+	const product = {
+		productId: req.params.id,
+		productTitle: 'Chais',
+		productCategory: 'Beverages',
+		productDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut',
+		productPrice: (18.00).toFixed(2),
+		imageUrl: 'fire_ash_1.jpg',
+		image: 'wilsontheball.jpg'
+	};
+	const reviewList = {
+		1: {
+			customerName: 'Bobby Brown',
+			dateReview: '2020-20-10',
+			stars: [1,2,3,4,5],
+			review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+		},
+		2: {
+			customerName: 'Bobby S',
+			dateReview: '2020-20-3',
+			stars: [1,2],
+			review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+		},
+		3: {
+			customerName: 'Bobby Fox',
+			dateReview: '2020-5-10',
+			stars: [1,2,3],
+			review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+		}
+	};
+	res.status(200).render('productPage', { title: 'Product', reviews: reviewList, product: product });
 });
 
 router.get('/account', userController.validateApiToken, (req, res) => {

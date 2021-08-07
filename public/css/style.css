@@ -203,3 +203,32 @@ a {
 .fa-search:hover {
 	cursor: pointer;
 }
+
+.product-review-block {
+	border-left: 5px solid #d4d0d0;
+}
+
+.img-store-lx {
+	width: 250px;
+	height: auto;
+}
+
+.product-item-legend-title {
+	font-size: 1em;
+}
+.product-item-description-title {
+	font-size: 0.9em;
+}
+
+.product-description {
+	line-height: 0.7;
+}
+.product-title {
+	line-height: 1;
+}
+
+.img-product-sm, .img-product-sm-secondary {
+	width: 50px;
+	height: 50px;
+	border: 2px solid #000;
+}
