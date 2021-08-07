@@ -136,16 +136,16 @@ module.exports = {
 			res.status(403).send({ data: { status: 403, message: "Error: Invalid Product id."}});
 		}
 	},
-	cartCheckout(session) {
+	async cartCheckout(req, res) {
 		var cart = null;
-		if (session.productList === undefined || (Object.keys(session.productList).length === 0)) {
+		if (req.session.productList === undefined || (Object.keys(req.session.productList).length === 0)) {
 			cart = {
 				title: "Oops, you can't do that 😥",
 				description: "Your cart is empty, and we can't process your order.",
 				link: "/store",
 				linkMessage: "Continue Shopping"
 			};
-		} else if (session.API_TOKEN === undefined) {
+		} else if (req.session.API_TOKEN === undefined) {
 			cart = {
 				title: "Oops, you can't do that 😥",
 				description: "You need to Log In to your account to checkout your cart.",
@@ -153,19 +153,13 @@ module.exports = {
 				linkMessage: "Login"
 			};
 		} else {
-			cart = {
-				title: "Success 😄",
-				description: "Your order is successfully placed! You will receive your confirmation email shortly.",
-				link: "/store",
-				linkMessage: "Continue Shopping"
-			}
-			let orderId = null;
+			let orderId = 0;
 			let custId = 0;
-			jwt.verify(session.API_TOKEN, `${process.env.SESSION_SECRET}`, function(err, data) {
+			jwt.verify(req.session.API_TOKEN, `${process.env.SESSION_SECRET}`, function(err, data) {
 				custId = data.userId;
 			});
 			
-			sql.connect(db).then(pool => {				
+			await sql.connect(db).then(pool => {				
 				return pool.request()
 					.input('custId', sql.Int, custId)
 					.query(`SELECT TOP 1 orderId FROM ordersummary WHERE customerId = @custId AND shiptoAddress IS NULL AND shiptoCity IS NULL AND shiptoState IS NULL AND shiptoPostalCode IS NULL AND shiptoCountry IS NULL ORDER BY orderDate DESC`);
@@ -187,8 +181,7 @@ module.exports = {
 								.input('prodId', sql.Int, productId)
 								.input('quantity', sql.Int, quantity)
 								.input('prodPrice', sql.Decimal, prodPrice)
-								.query('INSERT INTO orderproduct VALUES(@orderId, @prodId, @quantity, @prodPrice)');
-							
+								.query('INSERT INTO orderproduct VALUES(@orderId, @prodId, @quantity, @prodPrice)');	
 						}).catch(err => {
 							console.log(err);
 						});					
@@ -200,7 +193,7 @@ module.exports = {
 				console.log(err);
 			});
 
-			sql.connect(db).then(pool => {
+			await sql.connect(db).then(pool => {
 				return pool.request()
 					.input('custId', sql.Int, custId)
 					.query('SELECT address, city, state, postalCode, country FROM customer WHERE customerId = @custId');
@@ -226,8 +219,15 @@ module.exports = {
 			}).catch(err => {
 				console.log(err);
 			});
-			session.productList = {};
-		};
-		return cart;
+			req.session.productList = {};
+
+			cart = {
+				title: "Success 😄",
+				description: `Your order is successfully placed! You will receive your confirmation email shortly. Order #${orderId}, Customer #${custId}`,
+				link: "/store",
+				linkMessage: "Continue Shopping"
+			}
+		}
+		res.status(200).render('cartCheckout', { title: 'Checkout', response: cart });
 	},
 }

@@ -92,7 +92,7 @@ module.exports = {
 						.input('id', sql.Int, parseInt(custId))
 						.query('SELECT TOP 1 orderId FROM ordersummary WHERE customerId = @id AND shiptoAddress IS NULL AND shiptoCity IS NULL AND shiptoState IS NULL AND shiptoPostalCode IS NULL AND shiptoCountry IS NULL ORDER BY orderDate DESC');
 			}).then(result => {
-				if (result.rowsAffected !== 0) {
+				if (result.recordset[0] !== undefined) {
 					sql.connect(db.sqlConfig).then(pool => {
 						return pool.request()
 								.input('orderId', sql.Int, result.recordset[0].orderId)
@@ -109,13 +109,14 @@ module.exports = {
 						console.log(err);
 						res.status(403).send({ data: { status: 403, message: "Error: Invalid Statement."}});
 					});
-
+				} else {
+					res.status(200).send({ data: { status: 200 }});
 				}
+				
 			}).catch(err => {
 				console.log(err);
 				res.status(403).send({ data: { status: 403, message: "Error: Invalid Statement."}});
 			});
-
 		} else {
 			console.log('detected not empty on cart');
 			await sql.connect(db.sqlConfig).then(pool => {

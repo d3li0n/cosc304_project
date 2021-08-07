@@ -36,30 +36,27 @@ router.get('/store', (req, res) => {
 
 router.get('/cart', (req, res) => {
 	// showcart.js
-	// req.session.productList
 	let t = 0;
 	let shipTotal = 0;
 	let subTotal = 0;
-	Object.keys(req.session.productList).forEach(key => {
-		t += parseFloat(req.session.productList[key].totalPrice);
-	});	
-	shipTotal = (t*0.10);
-	subTotal = (t+shipTotal);
-	t = t.toFixed(2);
-	shipTotal = shipTotal.toFixed(2);
-	subTotal = subTotal.toFixed(2);
+
+	if (req.session.productList !== undefined && Object.keys(req.session.productList).length !== 0) {
+		Object.keys(req.session.productList).forEach(key => {
+			t += parseFloat(req.session.productList[key].totalPrice);
+		});	
+		shipTotal = (t*0.10);
+		subTotal = (t+shipTotal);
+		t = t.toFixed(2);
+		shipTotal = shipTotal.toFixed(2);
+		subTotal = subTotal.toFixed(2);
+	}
 
 	let totalArray = {total:t, shipTotal: shipTotal, subTotal: subTotal};
-	//console.log(total);
-	res.status(200).render('cart', { title: 'My Cart', isCart: (req.session.productsList === undefined || Object.keys(productsList).length === 0) ? true : false , tArray: totalArray});
+	
+	res.status(200).render('cart', { title: 'My Cart', isCart: (req.session.productList !== undefined && Object.keys(req.session.productList).length !== 0) ? true : false , tArray: totalArray});
 });
 
-router.get('/cart/checkout', (req, res) => {
-	// checkout.js
-
-	const cartResponse = cartController.cartCheckout(req.session);
-	res.status(200).render('cartCheckout', { title: 'Checkout', response: cartResponse });
-});
+router.get('/cart/checkout', cartController.cartCheckout);
 
 router.post('/product/:id/addCart', cartController.addProduct);
 
