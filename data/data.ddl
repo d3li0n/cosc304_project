@@ -1,5 +1,3 @@
-USE tempdb
-
 DROP TABLE IF EXISTS review;
 DROP TABLE IF EXISTS shipment;
 DROP TABLE IF EXISTS productinventory;
@@ -150,7 +148,7 @@ INSERT product(productName, categoryId, productDesc, productImageURL, productPri
 INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Blue Flame', 1, 'The hottest fire known to man', 'fire_2.jpg', 439.00);
 INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Rain Forest Earth', 2, 'Dirt from the Amazon rain forest', 'earth_1.jpg', 124.00);
 INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Canyon Earth', 2, 'Dirt from the depths of a secret canyon', 'earth_4.jpg', 389.00);
-INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Cloud Air', 3, 'Air from the height of clouds', 'air_1.jpg', 89.00);
+INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Cloud Air', 3, 'Air from the height of clouds', 'air_1.jpg', 89.75);
 INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Artic Air', 3, 'Air from the mountains in the Artic', 'air_2.jpg', 279.00);
 INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Clean Water', 4, 'Fresh water from secluded lakes', 'water_1.jpg', 176.00);
 INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Pure Water', 4, 'Purest water from icebergs in the north', 'water_4.jpg', 176.00);
@@ -164,38 +162,38 @@ INSERT INTO customer (firstName, lastName, email, phonenum, address, city, state
 
 
 DECLARE @orderId int
-INSERT INTO ordersummary (customerId,  orderDate, totalAmount, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry) VALUES (1, '2019-10-15 10:25:55', 91.70, '103 AnyWhere Street', 'Winnipeg', 'MB', 'R3X 45T', 'Canada')
+INSERT INTO ordersummary (customerId,  orderDate, totalAmount, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry) VALUES (1, '2019-10-15 10:25:55', 410.75, '103 AnyWhere Street', 'Winnipeg', 'MB', 'R3X 45T', 'Canada')
 SELECT @orderId = @@IDENTITY
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 1, 1, 18)
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 5, 2, 21.35)
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 7, 1, 31);
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 1, 1, 145)
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 5, 2, 89.75)
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 7, 1, 176);
 
 DECLARE @orderId int
-INSERT INTO ordersummary (customerId, orderDate, totalAmount, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry) VALUES (2, '2019-10-16 18:00:00', 106.75, '222 Bush Avenue', 'Boston', 'MA', '22222', 'United States')
+INSERT INTO ordersummary (customerId, orderDate, totalAmount, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry) VALUES (2, '2019-10-16 18:00:00', 89.75, '222 Bush Avenue', 'Boston', 'MA', '22222', 'United States')
 SELECT @orderId = @@IDENTITY
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 5, 5, 21.35);
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 5, 5, 89.75);
 
 DECLARE @orderId int
-INSERT INTO ordersummary (customerId, orderDate, totalAmount, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry) VALUES (3, '2019-10-15 3:30:22', 140, '333 Central Crescent', 'Chicago', 'IL', '33333', 'United States')
+INSERT INTO ordersummary (customerId, orderDate, totalAmount, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry) VALUES (3, '2019-10-15 3:30:22', 455, '333 Central Crescent', 'Chicago', 'IL', '33333', 'United States')
 SELECT @orderId = @@IDENTITY
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 6, 2, 25)
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 7, 3, 30);
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 6, 2, 279)
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 7, 3, 176);
 
 DECLARE @orderId int
-INSERT INTO ordersummary (customerId, orderDate, totalAmount, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry) VALUES (2, '2019-10-17 05:45:11', 327.85, '222 Bush Avenue', 'Boston', 'MA', '22222', 'United States')
+INSERT INTO ordersummary (customerId, orderDate, totalAmount, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry) VALUES (2, '2019-10-17 05:45:11', 1217.75, '222 Bush Avenue', 'Boston', 'MA', '22222', 'United States')
 SELECT @orderId = @@IDENTITY
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 3, 4, 10)
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 8, 3, 40)
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 4, 3, 23.25)
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 2, 2, 21.05)
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 5, 4, 14);
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 3, 4, 124)
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 8, 3, 176)
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 4, 3, 389)
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 2, 2, 439)
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 5, 4, 89.75);
 
 DECLARE @orderId int
-INSERT INTO ordersummary (customerId, orderDate, totalAmount, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry) VALUES (5, '2019-10-15 10:25:55', 277.40, '555 Everwood Street', 'Iowa City', 'IA', '52241', 'United States')
+INSERT INTO ordersummary (customerId, orderDate, totalAmount, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry) VALUES (5, '2019-10-15 10:25:55', 652.75, '555 Everwood Street', 'Iowa City', 'IA', '52241', 'United States')
 SELECT @orderId = @@IDENTITY
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 5, 4, 21.35)
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 3, 2, 81)
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 2, 3, 10);
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 5, 4, 89.75)
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 3, 2, 124)
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 2, 3, 439);
 
 ALTER TABLE customer ADD isAdmin BIT NOT NULL DEFAULT(0);
 UPDATE customer SET isAdmin = 1 WHERE customerId = 2;
