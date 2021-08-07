@@ -44,7 +44,7 @@ module.exports = {
 
 		if (!isEmailValid(email))
 			res.status(401).send({ data: { status: 403, message: "Error: Email is not valid." }});
-		if (!password || password.length < 5)
+		if (!password || password.length < 1)
 			res.status(401).send({ data: { status: 403, message: "Error: Password is not valid." }});
 
 		await sql.connect(db.sqlConfig).then(pool => {
@@ -70,10 +70,154 @@ module.exports = {
 				req.session.API_TOKEN = token;
 				req.session.isAuth = true;
 				req.session.userCredentials = credentials;
-				res.status(200).send({ data: { status: 200/*, message: credentials */ }});
+				next();
 			}
 		}).catch(err => {
 			console.log(err);
 		});
+	},
+
+	async fetchCart(req, res) {
+		let custId = 0;
+		
+		jwt.verify(req.session.API_TOKEN, `${process.env.SESSION_SECRET}`, function(err, data) {
+			custId = data.userId;
+		});
+		
+		if (req.session.productList === undefined || (Object.keys(req.session.productList).length === 0)) {
+			products = req.session.productList;
+			console.log('detected an empty cart on login');
+			await sql.connect(db.sqlConfig).then(pool => {
+				return pool.request()
+						.input('id', sql.Int, parseInt(custId))
+						.query('SELECT TOP 1 orderId FROM ordersummary WHERE customerId = @id AND shiptoAddress IS NULL AND shiptoCity IS NULL AND shiptoState IS NULL AND shiptoPostalCode IS NULL AND shiptoCountry IS NULL ORDER BY orderDate DESC');
+			}).then(result => {
+				if (result.recordset[0] !== undefined) {
+					sql.connect(db.sqlConfig).then(pool => {
+						return pool.request()
+								.input('orderId', sql.Int, result.recordset[0].orderId)
+								.query('SELECT incart.productId, incart.quantity, incart.price, product.productName FROM incart JOIN product ON incart.productId = product.productId WHERE incart.orderId = @orderId');
+					}).then(result => {
+						
+						for (var i = 0; i < result.rowsAffected; i++) {
+							products[result.recordsets[0][i].productId] = {
+								title: result.recordsets[0][i].productName, price: (result.recordsets[0][i].price).toFixed(2), quantity: result.recordsets[0][i].quantity, totalPrice: (result.recordsets[0][i].price * result.recordsets[0][i].quantity).toFixed(2)
+							};
+						}
+						res.status(200).send({ data: { status: 200 }});
+					}).catch(err => {
+						console.log(err);
+						res.status(403).send({ data: { status: 403, message: "Error: Invalid Statement."}});
+					});
+				} else {
+					res.status(200).send({ data: { status: 200 }});
+				}
+				
+			}).catch(err => {
+				console.log(err);
+				res.status(403).send({ data: { status: 403, message: "Error: Invalid Statement."}});
+			});
+		} else {
+			console.log('detected not empty on cart');
+			await sql.connect(db.sqlConfig).then(pool => {
+				return pool.request()
+						.input('id', sql.Int, parseInt(custId))
+						.query('SELECT TOP 1 orderId FROM ordersummary WHERE customerId = @id AND shiptoAddress IS NULL AND shiptoCity IS NULL AND shiptoState IS NULL AND shiptoPostalCode IS NULL AND shiptoCountry IS NULL ORDER BY orderDate DESC');
+			}).then(result => {
+				let orderId = 0;
+
+				if (result.rowsAffected !== 0 && result.recordset[0] !== undefined) {
+					orderId = result.recordset[0].orderId;
+				}	else {
+					const date = new Date();
+					sql.connect(db.sqlConfig).then(pool => {
+						return pool.request()
+								.input('custId', sql.Int, custId)
+								.input('date', sql.Date, date)
+								.query('INSERT INTO ordersummary(customerId, orderDate, totalAmount) VALUES(@custId, @date, 0); SELECT SCOPE_IDENTITY() AS id;');
+					}).then(result => {
+						orderId = parseInt(result.recordset[0].id);
+					}).catch(err => {
+						console.log(err);
+						res.status(403).send({ data: { status: 403, message: "Error: Invalid Statement."}});
+					});
+				}
+				Object.keys(req.session.productList).forEach(key => {
+					
+					sql.connect(db.sqlConfig).then(pool => {
+						return pool.request()
+								.input('orderId', sql.Int, parseInt(orderId))
+								.input('prodId', sql.Int, parseInt(key))
+								.query('SELECT * FROM incart WHERE orderId = @orderId AND productId = @prodId');
+					}).then(result => {
+						let prodPrice = parseFloat(req.session.productList[key].price);
+						if(result.recordset[0] === undefined) {
+							sql.connect(db.sqlConfig).then(pool => {
+								return pool.request()
+										.input('orderId', sql.Int, orderId)
+										.input('prodId', sql.Int, parseInt(key))
+										.input('prodPrice', sql.Decimal, prodPrice)
+										.query('INSERT INTO incart VALUES(@orderId, @prodId, 1, @prodPrice)');
+							}).then(result => {
+							}).catch(err => {
+								console.log(err);
+								res.status(403).send({ data: { status: 403, message: "Error: Invalid Statement."}});
+							});
+						} else {
+							sql.connect(db.sqlConfig).then(pool => {
+								return pool.request()
+										.input('orderId', sql.Int, orderId)
+										.input('prodId', sql.Int, parseInt(key))
+										.query('UPDATE incart SET quantity = quantity + 1 WHERE orderId = @orderId AND productId = @prodId');
+							}).then(result => {
+							}).catch(err => {
+								console.log(err);
+								res.status(403).send({ data: { status: 403, message: "Error: Invalid Statement."}});
+							});
+						}
+						sql.connect(db.sqlConfig).then(pool => {
+							return pool.request()
+									.input('orderId', sql.Int, orderId)
+									.input('prodPrice', sql.Decimal, prodPrice)
+									.query('UPDATE orderSummary SET totalAmount = totalAmount + @prodPrice WHERE orderId = @orderId');
+						}).then(result => {
+						}).catch(err => {
+							console.log(err);
+							res.status(403).send({ data: { status: 403, message: "Error: Invalid Statement."}});
+						});
+
+					}).catch(err => {
+						console.log(err);
+						res.status(403).send({ data: { status: 403, message: "Error: Invalid Statement."}});
+					});
+
+				});	
+				let products = req.session.productList;
+				
+				sql.connect(db.sqlConfig).then(pool => {
+					return pool.request()
+							.input('orderId', sql.Int, orderId)
+							.query('SELECT incart.productId, incart.quantity, incart.price, product.productName FROM incart JOIN product ON incart.productId = product.productId WHERE incart.orderId = @orderId');
+				}).then(result => {
+					for (var i = 0; i < result.rowsAffected; i++) {
+						if (products[result.recordsets[0][i].productId] === undefined)
+							products[result.recordsets[0][i].productId] = {title: result.recordsets[0][i].productName, price: (result.recordsets[0][i].price).toFixed(2), quantity: result.recordsets[0][i].quantity, totalPrice: (result.recordsets[0][i].price * result.recordsets[0][i].quantity).toFixed(2)};
+						else {
+							products[result.recordsets[0][i].productId].quantity = products[result.recordsets[0][i].productId].quantity + result.recordsets[0][i].quantity; 
+							products[result.recordsets[0][i].productId].totalPrice = (parseFloat(products[result.recordsets[0][i].productId].totalPrice) + (result.recordsets[0][i].price * result.recordsets[0][i].quantity)).toFixed(2);
+						}
+					}
+					res.status(200).send({ data: { status: 200 }});
+				}).catch(err => {
+					console.log(err);
+					res.status(403).send({ data: { status: 403, message: "Error: Invalid Statement."}});
+				});
+				
+			}).catch(err => {
+				console.log(err);
+				res.status(403).send({ data: { status: 403, message: "Error: Invalid Statement."}});
+			});
+		}
+		
 	}
 };

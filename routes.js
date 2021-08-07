@@ -3,53 +3,40 @@ const router = express.Router();
 const cartController = require('./controllers/CartController');
 const userController = require('./controllers/UserController');
 const storeController = require('./controllers/StoreController');
+const adminOrderController = require('./controllers/AdminOrderController');
 
 router.get('/', (req, res) => {
 	res.status(200).render('index', { title: 'Home' });
 });
-
-//router.get('/store', (req, res) => { 
-/*storeController.getProducts(req.query);
-	// listprod.js
-	const categories = [
-		"Air", "Water", "Fire", "Earth"
-	];
-	const productsList = {
-		1: {
-			imgUrl: "fire_ash_1.jpg",
-			title: "Fire Ash From Volcano",
-			price: (Math.round(21.35 * 100) / 100).toFixed(2)
-		},
-		2: {
-			imgUrl: "fire_ash_1.jpg",
-			title: "Fire Ash From Volcano",
-			price: (Math.round(400.50 * 100) / 100).toFixed(2)
-		},
-
-		
-	};
-
-	const prodLengthBool = (Object.keys(productsList).length) ? true : false;
-	res.status(200).render('store', { title: 'Store',
-																		categoriesList: categories, 
-																		isEmptyList: prodLengthBool, 
-																		products: productsList });
-});*/
 
 router.get('/store', storeController.getProducts);
 
 
 router.get('/cart', (req, res) => {
 	// showcart.js
-	res.status(200).render('cart', { title: 'My Cart', isCart: (req.session.productsList) ? true : false });
+	let t = 0;
+	let shipTotal = 0;
+	let subTotal = 0;
+
+	if (req.session.productList !== undefined && Object.keys(req.session.productList).length !== 0) {
+		Object.keys(req.session.productList).forEach(key => {
+			t += parseFloat(req.session.productList[key].totalPrice);
+		});	
+		shipTotal = (t*0.10);
+		subTotal = (t+shipTotal);
+		t = t.toFixed(2);
+		shipTotal = shipTotal.toFixed(2);
+		subTotal = subTotal.toFixed(2);
+	}
+
+	let totalArray = {total:t, shipTotal: shipTotal, subTotal: subTotal};
+	
+	res.status(200).render('cart', { title: 'My Cart', isCart: (req.session.productList !== undefined && Object.keys(req.session.productList).length !== 0) ? true : false , tArray: totalArray});
 });
 
-router.get('/cart/checkout', (req, res) => {
-	// checkout.js
+router.get('/cart/checkout', cartController.cartCheckout);
 
-	const cartResponse = cartController.cartCheckout(req.session);
-	res.status(200).render('cartCheckout', { title: 'Checkout', response: cartResponse });
-});
+router.post('/product/:id/addCart', cartController.addProduct);
 
 router.get('/product/:id', (req, res) => {
 	// listprod.js
@@ -67,7 +54,7 @@ router.get('/login', (req, res) => {
 	}
 });
 
-router.post('/login', userController.authUser);
+router.post('/login', userController.authUser, userController.fetchCart);
 
 router.post('/logout', (req, res) => {
 	if (req.session.API_TOKEN === undefined) {
@@ -85,55 +72,7 @@ router.post('/product/:id/addCart', (req, res) => {
 router.get('/admin/users', (req, res) => {
 });
 
-router.get('/admin/orders', (req, res) => {
-	// listorders.js
-	const orderList = {
-		// Test sample. TODO: database connection feature
-		3232: {
-			orderDate: '2019-12-20 13:30:30.0',
-			customerId: 23,
-			customerName: 'Test Test',
-			totalAmount: (Math.round(91.70 * 100) / 100).toFixed(2),
-			products: {
-				1: {
-					quantity: 1,
-					price: (Math.round(18.00 * 100) / 100).toFixed(2),
-				},
-				5: {
-					quantity: 2,
-					price: (Math.round(21.35 * 100) / 100).toFixed(2),
-				},
-				10: {
-					quantity: 1,
-					price: (Math.round(31.00 * 100) / 100).toFixed(2),
-				}
-			}
-		},
-		21222: {
-			orderDate: '2019-12-20 13:30:30.0',
-			customerId: 23,
-			customerName: 'Test Test',
-			totalAmount: (Math.round(91.70 * 100) / 100).toFixed(2),
-			products: {
-				1: {
-					quantity: 1,
-					price: (Math.round(18.00 * 100) / 100).toFixed(2),
-				},
-				5: {
-					quantity: 2,
-					price: (Math.round(21.35 * 100) / 100).toFixed(2),
-				},
-				10: {
-					quantity: 1,
-					price: (Math.round(31.00 * 100) / 100).toFixed(2),
-				}
-			}
-		}
-	};
-	const listLengthBool = (Object.keys(orderList).length) ? true : false;
-
-	res.status(200).render('ordersAdmin', { title: 'Orders', isEmptyList: listLengthBool, orders: orderList });
-});
+router.get('/admin/orders', adminOrderController.loadOrders );
 
 router.get('/admin/products', (req, res) => {
 });
