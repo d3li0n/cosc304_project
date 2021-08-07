@@ -41,7 +41,6 @@ router.get('/cart', (req, res) => {
 	let shipTotal = 0;
 	let subTotal = 0;
 	Object.keys(req.session.productList).forEach(key => {
-		//console.log(req.session.productList[key].totalPrice);
 		t += parseFloat(req.session.productList[key].totalPrice);
 	});	
 	shipTotal = (t*0.10);
@@ -80,7 +79,7 @@ router.get('/login', (req, res) => {
 	}
 });
 
-router.post('/login', userController.authUser);
+router.post('/login', userController.authUser, userController.fetchCart);
 
 router.post('/logout', (req, res) => {
 	if (req.session.API_TOKEN === undefined) {

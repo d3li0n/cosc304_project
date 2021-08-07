@@ -3,7 +3,8 @@ const db = require('../dbconfig');
 const jwt = require('jsonwebtoken');
 module.exports = {
 	loadCart(req, res, next) {
-		if (req.session.productList === undefined) {
+		
+		if (req.session.productList === undefined || (Object.keys(req.session.productList).length === 0)) {
 			req.session.productList = {};
 			req.session.productListPrice = (0).toFixed(2);
 		} else {
