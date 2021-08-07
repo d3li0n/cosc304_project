@@ -5,5 +5,11 @@
 	<div class="d-block">
 		<p class="fw-bold fs-2">Connecting to database.</p>
 		<p class="fw-bold fs-2">Database Response: {{#if result.response}}<span class="text-success">Success</span>{{else}}<span class="text-danger">Failed</span>{{/if}} (Code: {{ result.status }})</p>
+		<p class="fw-bold fs-2">Logs: </p>
+		<div class="d-block">
+			{{#each result.query}}
+			<span>id: {{@key}} - recordsets: {{ this.recordsets }} - recordset: {{ this.recordset }} - output: {{ this.output }} - rows affected: {{ this.rowsAffected }}</span><br />
+			{{/each}}
+		</div>
 	</div>
 </div>

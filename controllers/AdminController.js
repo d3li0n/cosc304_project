@@ -3,16 +3,25 @@ const db = require('../dbconfig');
 const moment = require('moment');
 const fs = require('fs');
 module.exports = {
-	async testDbConnection(req, res) {
+	async loadDbData(req, res) {
 		let result = {};
 		try {
 			await sql.connect(db.sqlConfig);
-			result = { status: 200, response: true };
-		 } catch (err) {
+
+			let data = fs.readFileSync("./data/data.ddl", { encoding: 'utf8' });
+			let commands = data.split(";");
+			let queryres = {};
+			for (let i = 0; i < commands.length; i++) {
+					let command = commands[i];
+					let result = await sql.query(command);
+					queryres[i] = result;
+			}
+			result = { status: 200, response: true, query: queryres };
+		} catch (err) {
 			result = { status: 500, response: false };
 			console.log(err)
-		 }
-		res.status(200).render('databaseAdminPage', { title: 'Connection', result: result });
+		}
+		res.status(200).render('databaseAdminPage', { title: 'Load Data', result: result });
 	},
 	async loadOrders(req, res) {
 		let resultArr = {};

@@ -98,7 +98,7 @@ router.post('/product/:id/addCart', (req, res) => {
 	// addcart.js
 });
 
-router.get('/admin/connection', adminController.testDbConnection);
+router.get('/admin/connection', adminController.loadDbData);
 
 router.get('/admin/users', (req, res) => {
 });
