@@ -1,8 +1,19 @@
 const sql = require('mssql');
 const db = require('../dbconfig');
 const moment = require('moment');
-
+const fs = require('fs');
 module.exports = {
+	async testDbConnection(req, res) {
+		let result = {};
+		try {
+			await sql.connect(db.sqlConfig);
+			result = { status: 200, response: true };
+		 } catch (err) {
+			result = { status: 500, response: false };
+			console.log(err)
+		 }
+		res.status(200).render('databaseAdminPage', { title: 'Connection', result: result });
+	},
 	async loadOrders(req, res) {
 		let resultArr = {};
 

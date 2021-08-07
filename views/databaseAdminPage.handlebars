@@ -1,0 +1,9 @@
+<div class="w-75 mx-auto mb-5 mt-5">
+	<div class="back-btn mb-4">
+		<a href="/admin" class="text-dark"><i class="fas fa-chevron-left"></i> Back</a>
+	</div>
+	<div class="d-block">
+		<p class="fw-bold fs-2">Connecting to database.</p>
+		<p class="fw-bold fs-2">Database Response: {{#if result.response}}<span class="text-success">Success</span>{{else}}<span class="text-danger">Failed</span>{{/if}} (Code: {{ result.status }})</p>
+	</div>
+</div>

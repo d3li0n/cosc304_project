@@ -3,7 +3,7 @@ const router = express.Router();
 const cartController = require('./controllers/CartController');
 const userController = require('./controllers/UserController');
 const storeController = require('./controllers/StoreController');
-const adminOrderController = require('./controllers/AdminOrderController');
+const adminController = require('./controllers/AdminController');
 
 router.get('/', (req, res) => {
 	res.status(200).render('index', { title: 'Home' });
@@ -98,10 +98,12 @@ router.post('/product/:id/addCart', (req, res) => {
 	// addcart.js
 });
 
+router.get('/admin/connection', adminController.testDbConnection);
+
 router.get('/admin/users', (req, res) => {
 });
 
-router.get('/admin/orders', adminOrderController.loadOrders );
+router.get('/admin/orders', adminController.loadOrders );
 
 router.get('/admin/products', (req, res) => {
 });
