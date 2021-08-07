@@ -118,13 +118,11 @@ module.exports = {
 
 		} else {
 			console.log('detected not empty on cart');
-			// case when user is logged in and current cart is not emptyss
 			await sql.connect(db.sqlConfig).then(pool => {
 				return pool.request()
 						.input('id', sql.Int, parseInt(custId))
 						.query('SELECT TOP 1 orderId FROM ordersummary WHERE customerId = @id AND shiptoAddress IS NULL AND shiptoCity IS NULL AND shiptoState IS NULL AND shiptoPostalCode IS NULL AND shiptoCountry IS NULL ORDER BY orderDate DESC');
 			}).then(result => {
-				//if (result.rowsAffected !== 0) {
 				let orderId = 0;
 
 				if (result.rowsAffected !== 0 && result.recordset[0] !== undefined) {
