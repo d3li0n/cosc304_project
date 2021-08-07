@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const sql = require('mssql');
 const db = require('../dbconfig');
+const moment = require('moment');
 
 var emailRegex = /^[-!#$%&'*+\/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/;
 function isEmailValid(email) {
@@ -129,11 +130,11 @@ module.exports = {
 				if (result.rowsAffected !== 0 && result.recordset[0] !== undefined) {
 					orderId = result.recordset[0].orderId;
 				}	else {
-					const date = new Date();
+					const date = moment().format('YYYY-MM-DD HH:mm:ss.S');
 					sql.connect(db.sqlConfig).then(pool => {
 						return pool.request()
 								.input('custId', sql.Int, custId)
-								.input('date', sql.Date, date)
+								.input('date', sql.DateTime, date)
 								.query('INSERT INTO ordersummary(customerId, orderDate, totalAmount) VALUES(@custId, @date, 0); SELECT SCOPE_IDENTITY() AS id;');
 					}).then(result => {
 						orderId = parseInt(result.recordset[0].id);

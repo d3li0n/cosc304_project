@@ -11,7 +11,6 @@ module.exports = {
 			totalAmount, productId, quantity, price FROM ordersummary JOIN customer ON ordersummary.customerId = customer.customerId 
 			JOIN orderproduct ON orderproduct.orderId = ordersummary.orderId ORDER BY orderId`
 		}).then(result => {
-			console.log(result)
 			if (result.recordsets[0] !== undefined) {
 					for(var i = 0; i < result.rowsAffected; i++) {
 						if (resultArr[result.recordsets[0][i].orderId] === undefined) {

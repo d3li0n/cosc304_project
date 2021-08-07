@@ -1,6 +1,7 @@
 const sql = require('mssql');
 const db = require('../dbconfig');
 const jwt = require('jsonwebtoken');
+const moment = require('moment');
 module.exports = {
 	loadCart(req, res, next) {
 		
@@ -98,11 +99,11 @@ module.exports = {
 						});
 
 					} else {
-						const date = new Date();
+						const date = moment().format('YYYY-MM-DD HH:mm:ss.S');
 						sql.connect(db.sqlConfig).then(pool => {
 							return pool.request()
 									.input('custId', sql.Int, custId)
-									.input('date', sql.Date, date)
+									.input('date', sql.DateTime, date)
 									.input('prodPrice', sql.Decimal, products[prodId].price)
 									.query('INSERT INTO ordersummary(customerId, orderDate, totalAmount) VALUES(@custId, @date, @prodPrice); SELECT SCOPE_IDENTITY() AS id;');
 						}).then(result => {
