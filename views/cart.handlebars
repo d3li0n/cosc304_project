@@ -23,45 +23,45 @@
 					Price
 				</div>
 			</div>
-
+			{{#each session.productList}}
 			<div class="row align-items-start mt-4 mb-4 border-bottom">
 				<div class="col">
-					233332
+					{{@key}}
 				</div>
 				<div class="col">
-					Test Test
+					{{this.title}}
 				</div>
 				<div class="col">
-					23
+					{{this.quantity}}
 				</div>
 				<div class="col">
-					$323333.32
+					${{this.price}}
 				</div>
 			</div>
+			{{/each}}
 		</div>
 		<div class="col-sm-5">
 			<div class="cart-summary-block">
 				<div class="cart-block-legend-summary ps-3 pe-3 py-3 d-block rounded">
-					<p class="fw-bold fs-3" style="color:#4e5154;">Summary</p>
-
+					<p class="fw-bold fs-3" style="color:#4e5154;">Summary</p>					
 					<div class="cart-order-total d-block text-secondary">
 						<div class="row">
 							<div class="col-7">
 								Order total
 							</div>
-							<div class="col-5">$34000.30</div>
+							<div class="col-5">${{tArray.total}}</div>
 						</div>
 						<div class="row mt-4">
 							<div class="col-7">
 								Shipping total
 							</div>
-							<div class="col-5">$200.30</div>
+							<div class="col-5">${{tArray.shipTotal}}</div>
 						</div>
 						<div class="row mt-4 align-items-center border-top pt-2">
 							<div class="col-7">
 								Subtotal
 							</div>
-							<div class="col-5 fw-bold fs-5">$233333.20</div>
+							<div class="col-5 fw-bold fs-5">${{tArray.subTotal}}</div>
 						</div>
 					</div>
 				</div>
