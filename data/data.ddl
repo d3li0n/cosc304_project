@@ -219,3 +219,6 @@ SELECT @orderId = @@IDENTITY
 INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 5, 4, 21.35)
 INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 19, 2, 81)
 INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 20, 3, 10);
+
+ALTER TABLE customer ADD isAdmin BIT NOT NULL DEFAULT(0);
+UPDATE customer SET isAdmin = 1 WHERE customerId = 2;
