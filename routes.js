@@ -2,37 +2,15 @@ const express = require('express');
 const router = express.Router();
 const cartController = require('./controllers/CartController');
 const userController = require('./controllers/UserController');
+const storeController = require('./controllers/StoreController');
 const adminOrderController = require('./controllers/AdminOrderController');
 
 router.get('/', (req, res) => {
 	res.status(200).render('index', { title: 'Home' });
 });
 
-router.get('/store', (req, res) => {
-	// listprod.js
-	const categories = [
-		"Air", "Water", "Fire", "Earth"
-	];
+router.get('/store', storeController.getProducts);
 
-	const productsList = {
-		1: {
-			imgUrl: "fire_ash_1.jpg",
-			title: "Fire Ash From Volcano",
-			price: (Math.round(21.35 * 100) / 100).toFixed(2)
-		},
-		2: {
-			imgUrl: "fire_ash_1.jpg",
-			title: "Fire Ash From Volcano",
-			price: (Math.round(400.50 * 100) / 100).toFixed(2)
-		}
-	};
-
-	const prodLengthBool = (Object.keys(productsList).length) ? true : false;
-	res.status(200).render('store', { title: 'Store',
-																		categoriesList: categories, 
-																		isEmptyList: prodLengthBool, 
-																		products: productsList });
-});
 
 router.get('/cart', (req, res) => {
 	// showcart.js
