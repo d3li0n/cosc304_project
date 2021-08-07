@@ -152,6 +152,7 @@ INSERT product(productName, categoryId, productDesc, productImageURL, productPri
 INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Artic Air', 3, 'Air from the mountains in the Artic', 'air_2.jpg', 279.00);
 INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Clean Water', 4, 'Fresh water from secluded lakes', 'water_1.jpg', 176.00);
 INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Pure Water', 4, 'Purest water from icebergs in the north', 'water_4.jpg', 176.00);
+INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Fiji Water Bottle', 4, 'Bottle of water picked from mountain Fiji.', 'water_5.jpg', 5376.23);
 
     
 INSERT INTO customer (firstName, lastName, email, phonenum, address, city, state, postalCode, country, userid, password) VALUES ('Arnold', 'Anderson', 'a.anderson@gmail.com', '204-111-2222', '103 AnyWhere Street', 'Winnipeg', 'MB', 'R3X 45T', 'Canada', 'arnold' , 'test');
