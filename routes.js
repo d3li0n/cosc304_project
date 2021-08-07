@@ -51,7 +51,7 @@ router.get('/cart', (req, res) => {
 
 	let totalArray = {total:t, shipTotal: shipTotal, subTotal: subTotal};
 	//console.log(total);
-	res.status(200).render('cart', { title: 'My Cart', isCart: (req.session.productsList === undefined) ? true : false , tArray: totalArray});
+	res.status(200).render('cart', { title: 'My Cart', isCart: (req.session.productsList === undefined || Object.keys(productsList).length === 0) ? true : false , tArray: totalArray});
 });
 
 router.get('/cart/checkout', (req, res) => {

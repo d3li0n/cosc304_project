@@ -155,10 +155,78 @@ module.exports = {
 		} else {
 			cart = {
 				title: "Success 😄",
-				description: "Your order is successfully placed!<br/> You will receive your confirmation email shortly.",
+				description: "Your order is successfully placed! You will receive your confirmation email shortly.",
 				link: "/store",
 				linkMessage: "Continue Shopping"
 			}
+			let orderId = null;
+			let custId = 0;
+			jwt.verify(session.API_TOKEN, `${process.env.SESSION_SECRET}`, function(err, data) {
+				custId = data.userId;
+			});
+			
+			sql.connect(db).then(pool => {				
+				return pool.request()
+					.input('custId', sql.Int, custId)
+					.query(`SELECT TOP 1 orderId FROM ordersummary WHERE customerId = @custId AND shiptoAddress IS NULL AND shiptoCity IS NULL AND shiptoState IS NULL AND shiptoPostalCode IS NULL AND shiptoCountry IS NULL ORDER BY orderDate DESC`);
+			}).then(result => {
+				orderId = parseInt(result.recordset[0].orderId);
+				sql.connect(db.sqlConfig).then(pool => {
+					return pool.request()
+							.input('orderId', sql.Int, orderId)							
+							.query('SELECT * FROM incart WHERE orderId = @orderId');
+				}).then(result => {		
+								
+					for(var i = 0; i < result.rowsAffected; i++) {
+						let productId =  result.recordsets[0][i].productId;
+						let prodPrice = (result.recordsets[0][i].price).toFixed(2);
+						let quantity =  (result.recordsets[0][i].quantity);
+						sql.connect(db.sqlConfig).then(pool => {							
+							return pool.request()
+								.input('orderId', sql.Int, orderId)
+								.input('prodId', sql.Int, productId)
+								.input('quantity', sql.Int, quantity)
+								.input('prodPrice', sql.Decimal, prodPrice)
+								.query('INSERT INTO orderproduct VALUES(@orderId, @prodId, @quantity, @prodPrice)');
+							
+						}).catch(err => {
+							console.log(err);
+						});					
+					}											
+				}).catch(err => {
+					console.log(err);
+				});
+			}).catch(err => {
+				console.log(err);
+			});
+
+			sql.connect(db).then(pool => {
+				return pool.request()
+					.input('custId', sql.Int, custId)
+					.query('SELECT address, city, state, postalCode, country FROM customer WHERE customerId = @custId');
+			}).then(result =>{
+				let custAddress = result.recordset[0].address;
+				let custCity = result.recordset[0].city;
+				let custState = result.recordset[0].state;
+				let custPO = result.recordset[0].postalCode;
+				let custCountry = result.recordset[0].country;
+				sql.connect(db).then(pool => {
+					return pool.request()
+						.input('address',sql.VarChar,custAddress)
+						.input('city',sql.VarChar,custCity)
+						.input('state',sql.VarChar,custState)
+						.input('postalCode',sql.VarChar,custPO)
+						.input('country',sql.VarChar,custCountry)
+						.input('orderId',sql.VarChar,orderId)
+						.input('custId',sql.VarChar,custId)
+						.query('UPDATE ordersummary SET shiptoAddress= @address, shiptoCity= @city, shiptoState = @state, shiptoPostalCode = @postalCode, shiptoCountry = @country WHERE orderId = @orderId AND customerId = @custId');
+				}).catch(err => {
+					console.log(err);
+				});
+			}).catch(err => {
+				console.log(err);
+			});
+			session.productList = {};
 		};
 		return cart;
 	},
