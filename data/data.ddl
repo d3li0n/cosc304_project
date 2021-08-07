@@ -137,45 +137,22 @@ CREATE TABLE review (
         ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-INSERT INTO category(categoryName) VALUES ('Beverages');
-INSERT INTO category(categoryName) VALUES ('Condiments');
-INSERT INTO category(categoryName) VALUES ('Dairy Products');
-INSERT INTO category(categoryName) VALUES ('Produce');
-INSERT INTO category(categoryName) VALUES ('Meat/Poultry');
-INSERT INTO category(categoryName) VALUES ('Seafood');
-INSERT INTO category(categoryName) VALUES ('Confections');
-INSERT INTO category(categoryName) VALUES ('Grains/Cereals');
+INSERT INTO category(categoryName) VALUES ('Fire');
+INSERT INTO category(categoryName) VALUES ('Earth');
+INSERT INTO category(categoryName) VALUES ('Air');
+INSERT INTO category(categoryName) VALUES ('Water');
 
 
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Chai', 1, '10 boxes x 20 bags',18.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Chang',1,'24 - 12 oz bottles',19.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Aniseed Syrup',2,'12 - 550 ml bottles',10.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Chef Anton''s Cajun Seasoning',2,'48 - 6 oz jars',22.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Chef Anton''s Gumbo Mix',2,'36 boxes',21.35);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Grandma''s Boysenberry Spread',2,'12 - 8 oz jars',25.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Uncle Bob''s Organic Dried Pears',4,'12 - 1 lb pkgs.',30.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Northwoods Cranberry Sauce',2,'12 - 12 oz jars',40.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Mishi Kobe Niku',5,'18 - 500 g pkgs.',97.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Ikura',6,'12 - 200 ml jars',31.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Queso Cabrales',3,'1 kg pkg.',21.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Queso Manchego La Pastora',3,'10 - 500 g pkgs.',38.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Tofu',4,'40 - 100 g pkgs.',23.25);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Genen Shouyu',2,'24 - 250 ml bottles',15.50);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Pavlova',7,'32 - 500 g boxes',17.45);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Alice Mutton',5,'20 - 1 kg tins',39.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Carnarvon Tigers',6,'16 kg pkg.',62.50);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Teatime Chocolate Biscuits',7,'10 boxes x 12 pieces',9.20);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Sir Rodney''s Marmalade',7,'30 gift boxes',81.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Sir Rodney''s Scones',7,'24 pkgs. x 4 pieces',10.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Gustaf''s Knackebread',8,'24 - 500 g pkgs.',21.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Sasquatch Ale',1,'24 - 12 oz bottles',14.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Steeleye Stout',1,'24 - 12 oz bottles',18.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Inlagd Sill',6,'24 - 250 g  jars',19.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Boston Crab Meat',6,'24 - 4 oz tins',18.40);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Jack''s New England Clam Chowder',6,'12 - 12 oz cans',9.65);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Singaporean Hokkien Fried Mee',8,'32 - 1 kg pkgs.',14.00);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Louisiana Fiery Hot Pepper Sauce',2,'32 - 8 oz bottles',21.05);
-INSERT product(productName, categoryId, productDesc, productPrice) VALUES ('Laughing Lumberjack Lager',1,'24 - 12 oz bottles',14.00);
+
+INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Camp Fire', 1, 'Fire from a premium camping location', 'fire_3.jpg', 145.00);
+INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Blue Flame', 1, 'The hottest fire known to man', 'fire_2.jpg', 439.00);
+INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Rain Forest Earth', 2, 'Dirt from the Amazon rain forest', 'earth_1.jpg', 124.00);
+INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Canyon Earth', 2, 'Dirt from the depths of a secret canyon', 'earth_4.jpg', 389.00);
+INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Cloud Air', 3, 'Air from the height of clouds', 'air_1.jpg', 89.75);
+INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Artic Air', 3, 'Air from the mountains in the Artic', 'air_2.jpg', 279.00);
+INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Clean Water', 4, 'Fresh water from secluded lakes', 'water_1.jpg', 176.00);
+INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Pure Water', 4, 'Purest water from icebergs in the north', 'water_4.jpg', 176.00);
+
     
 INSERT INTO customer (firstName, lastName, email, phonenum, address, city, state, postalCode, country, userid, password) VALUES ('Arnold', 'Anderson', 'a.anderson@gmail.com', '204-111-2222', '103 AnyWhere Street', 'Winnipeg', 'MB', 'R3X 45T', 'Canada', 'arnold' , 'test');
 INSERT INTO customer (firstName, lastName, email, phonenum, address, city, state, postalCode, country, userid, password) VALUES ('Bobby', 'Brown', 'bobby.brown@hotmail.ca', '572-342-8911', '222 Bush Avenue', 'Boston', 'MA', '22222', 'United States', 'bobby' , 'bobby');
@@ -185,38 +162,38 @@ INSERT INTO customer (firstName, lastName, email, phonenum, address, city, state
 
 
 DECLARE @orderId int
-INSERT INTO ordersummary (customerId,  orderDate, totalAmount, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry) VALUES (1, '2019-10-15 10:25:55', 91.70, '103 AnyWhere Street', 'Winnipeg', 'MB', 'R3X 45T', 'Canada')
+INSERT INTO ordersummary (customerId,  orderDate, totalAmount, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry) VALUES (1, '2019-10-15 10:25:55', 410.75, '103 AnyWhere Street', 'Winnipeg', 'MB', 'R3X 45T', 'Canada')
 SELECT @orderId = @@IDENTITY
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 1, 1, 18)
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 5, 2, 21.35)
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 10, 1, 31);
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 1, 1, 145)
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 5, 2, 89.75)
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 7, 1, 176);
 
 DECLARE @orderId int
-INSERT INTO ordersummary (customerId, orderDate, totalAmount, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry) VALUES (2, '2019-10-16 18:00:00', 106.75, '222 Bush Avenue', 'Boston', 'MA', '22222', 'United States')
+INSERT INTO ordersummary (customerId, orderDate, totalAmount, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry) VALUES (2, '2019-10-16 18:00:00', 89.75, '222 Bush Avenue', 'Boston', 'MA', '22222', 'United States')
 SELECT @orderId = @@IDENTITY
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 5, 5, 21.35);
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 5, 5, 89.75);
 
 DECLARE @orderId int
-INSERT INTO ordersummary (customerId, orderDate, totalAmount, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry) VALUES (3, '2019-10-15 3:30:22', 140, '333 Central Crescent', 'Chicago', 'IL', '33333', 'United States')
+INSERT INTO ordersummary (customerId, orderDate, totalAmount, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry) VALUES (3, '2019-10-15 3:30:22', 455, '333 Central Crescent', 'Chicago', 'IL', '33333', 'United States')
 SELECT @orderId = @@IDENTITY
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 6, 2, 25)
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 7, 3, 30);
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 6, 2, 279)
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 7, 3, 176);
 
 DECLARE @orderId int
-INSERT INTO ordersummary (customerId, orderDate, totalAmount, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry) VALUES (2, '2019-10-17 05:45:11', 327.85, '222 Bush Avenue', 'Boston', 'MA', '22222', 'United States')
+INSERT INTO ordersummary (customerId, orderDate, totalAmount, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry) VALUES (2, '2019-10-17 05:45:11', 1217.75, '222 Bush Avenue', 'Boston', 'MA', '22222', 'United States')
 SELECT @orderId = @@IDENTITY
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 3, 4, 10)
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 8, 3, 40)
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 13, 3, 23.25)
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 28, 2, 21.05)
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 29, 4, 14);
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 3, 4, 124)
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 8, 3, 176)
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 4, 3, 389)
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 2, 2, 439)
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 5, 4, 89.75);
 
 DECLARE @orderId int
-INSERT INTO ordersummary (customerId, orderDate, totalAmount, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry) VALUES (5, '2019-10-15 10:25:55', 277.40, '555 Everwood Street', 'Iowa City', 'IA', '52241', 'United States')
+INSERT INTO ordersummary (customerId, orderDate, totalAmount, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry) VALUES (5, '2019-10-15 10:25:55', 652.75, '555 Everwood Street', 'Iowa City', 'IA', '52241', 'United States')
 SELECT @orderId = @@IDENTITY
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 5, 4, 21.35)
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 19, 2, 81)
-INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 20, 3, 10);
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 5, 4, 89.75)
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 3, 2, 124)
+INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 2, 3, 439);
 
 ALTER TABLE customer ADD isAdmin BIT NOT NULL DEFAULT(0);
 UPDATE customer SET isAdmin = 1 WHERE customerId = 2;
