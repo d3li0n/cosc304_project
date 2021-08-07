@@ -105,4 +105,10 @@ $(document).ready(function () {
 			}
 		});
 	});
+	$(".img-product-sm").click(function(e) {
+		$(".img-store-lx").attr('src', `${$(".img-product-sm").attr('src')}`);
+	})
+	$(".img-product-sm-secondary").click(function(e) {
+		$(".img-store-lx").attr('src', `${$(".img-product-sm-secondary").attr('src')}`);
+	})
 });
