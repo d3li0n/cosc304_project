@@ -31,38 +31,41 @@ module.exports = {
 	async validate(req, res, next) {
 		if (req.session.API_TOKEN === undefined || req.session.userCredentials === undefined || !req.session.userCredentials.isAdmin) {
 			res.status(401).send({ data: { status: 403, message: "Error: Forbidden." }});
-		}
-		const email = req.body.email;
-		const password = req.body.password;
+		} else {
+			const email = req.body.email;
+			const password = req.body.password;
 
-		if (!isEmailValid(email))
-			res.status(401).send({ data: { status: 403, message: "Error: Email is not valid." }});
-		if (!password || password.length < 1)
-			res.status(401).send({ data: { status: 403, message: "Error: Password is not valid." }});
-
-		await sql.connect(db.sqlConfig).then(pool => {
-				return pool.request()
-						.input('email', sql.VarChar, email)
-						.query('select * from customer where email = @email');
-		}).then(result => {
-			if (result.recordset.length == 0)
-				res.status(401).send({ data: { status: 403, message: "Error: Account doesn't exist." }});
+			if (!isEmailValid(email))
+				res.status(401).send({ data: { status: 403, message: "Error: Email is not valid." }});
+			else if (!password || password.length < 1)
+				res.status(401).send({ data: { status: 403, message: "Error: Password is not valid." }});
 			else {
-				if (result.recordset[0].password !== password)
-					res.status(401).send({ data: { status: 403, message: "Error: Password is not valid."}});
-
-				let credentials = {
-					firstName: result.recordset[0].firstName,
-					lastName: `${(result.recordset[0].lastName).substr(0, 1)}.`,
-					isAdmin: result.recordset[0].isAdmin,
-					isAuthAdmin: true
-				};
-				req.session.userCredentials = credentials;
-				res.status(200).send({ data: { status: 200 }});
+				await sql.connect(db.sqlConfig).then(pool => {
+						return pool.request()
+								.input('email', sql.VarChar, email)
+								.query('select * from customer where email = @email');
+				}).then(result => {
+					if (result.rowsAffected[0] === 0)
+						res.status(401).send({ data: { status: 403, message: "Error: Account doesn't exist." }});
+					else {
+						if (result.recordset[0].password !== password)
+							res.status(401).send({ data: { status: 403, message: "Error: Password is not valid."}});
+						else {
+							let credentials = {
+								firstName: result.recordset[0].firstName,
+								lastName: `${(result.recordset[0].lastName).substr(0, 1)}.`,
+								isAdmin: result.recordset[0].isAdmin,
+								isAuthAdmin: true
+							};
+							req.session.userCredentials = credentials;
+							res.status(200).send({ data: { status: 200 }});
+						}
+					}
+				}).catch(err => {
+					console.log(err);
+				});
 			}
-		}).catch(err => {
-			console.log(err);
-		});
+		}
 	},
 	async auth(req, res, next) {
 		if (req.session.API_TOKEN === undefined || req.session.userCredentials === undefined || !req.session.userCredentials.isAdmin) {

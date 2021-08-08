@@ -184,10 +184,51 @@ $(document).ready(function () {
 			}
 		});
 	});
+
 	$(".img-product-sm").click(function(e) {
 		$(".img-store-lx").attr('src', `${$(".img-product-sm").attr('src')}`);
-	})
+	});
 	$(".img-product-sm-secondary").click(function(e) {
 		$(".img-store-lx").attr('src', `${$(".img-product-sm-secondary").attr('src')}`);
-	})
+	});
+
+	$(".firstNameReg").keyup(function(e){
+		if($(this).val().length > 0) {
+			$(".nicknameReg").val(`${$(this).val().toLowerCase()}`);
+		}
+	});
+
+	$('#btnRegisterForm').click(function(e) {  
+		$.ajax({
+			type: "POST",
+			url: '/register',
+			data: {
+				firstName: $('.firstNameReg').val(),
+				lastName: $('.lastNameReg').val(),
+				email: $('.emailReg').val(),
+				phone: $('.phoneReg').val(),
+				street: $('.addressReg').val(),
+				city: $('.cityReg').val(),
+				code: $('.codeReg').val(),
+				state: $('.stateReg').val(),
+				country: $('.countryReg').val(),
+				password: $('.passwordReg').val(),
+				nickname: $('.nicknameReg').val(),
+			},
+			dataType: 'application/json',
+			success: function (response) {
+			}, error: function (err) {
+				let response = JSON.parse(err.responseText);
+
+				if (parseInt(response.data.status) === 403 || parseInt(response.data.status) === 401) {
+					$(".log-err").text(response.data.message);
+					$(".log-err").show();
+				} else {
+					$(".register-block").hide();
+					$(".regSuccess").show();
+					setTimeout(function(){ window.location = '/login'; }, 4000);
+				}
+			}
+		});
+	});
 });
