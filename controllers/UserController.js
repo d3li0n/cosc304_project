@@ -32,8 +32,11 @@ module.exports = {
 		if (req.session.API_TOKEN === undefined) {
 			res.status(301).redirect("/login");
 		} else {
-			res.status(301).redirect("/"); //temp
+			next();
 		}
+	},
+	async getUser(req, res) {
+		res.status(200).render('accountPage', { title: 'My account' });
 	},
 	async authUser(req, res, next) {
 
