@@ -98,18 +98,29 @@ router.post('/product/:id/addCart', (req, res) => {
 	// addcart.js
 });
 
+router.use('/admin/*', adminController.auth);
+
+router.get('/admin', adminController.auth, (req, res) => {
+	res.status(200).render('admin', { title: 'Admin Portal' });
+});
+
+router.post('/a/login', adminController.validate);
+
+router.get('/admin/sales', adminController.loadSales);
+
 router.get('/admin/connection', adminController.loadDbData);
 
-router.get('/admin/users', (req, res) => {
+router.get('/admin/users', adminController.loadUsers);
+
+router.get('/admin/shipments', adminController.loadShipments);
+
+router.get('/admin/shipments/:id', (req, res) => {
+	res.status(200).render('adminShipPage', { title: 'Ship Page' });
 });
 
 router.get('/admin/orders', adminController.loadOrders );
 
 router.get('/admin/products', (req, res) => {
-});
-
-router.get('/admin', (req, res) => {
-	res.status(200).render('admin', { title: 'Admin Portal' });
 });
 
 router.get('*', (req, res) => {

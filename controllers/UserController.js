@@ -59,14 +59,16 @@ module.exports = {
 				if (result.recordset[0].password !== password)
 					res.status(401).send({ data: { status: 403, message: "Error: Password is not valid."}});
 
-				const token = jwt.sign({ userId: result.recordset[0].customerId, isAdmin: false }, `${process.env.SESSION_SECRET}`, {
+				const token = jwt.sign({ userId: result.recordset[0].customerId }, `${process.env.SESSION_SECRET}`, {
 					expiresIn: '7d',
 				});
 				req.session.API_TOKEN = token;
 
 				let credentials = {
 					firstName: result.recordset[0].firstName,
-					lastName: `${(result.recordset[0].lastName).substr(0, 1)}.`
+					lastName: `${(result.recordset[0].lastName).substr(0, 1)}.`,
+					isAdmin: result.recordset[0].isAdmin,
+					isAuthAdmin: false
 				};
 				req.session.API_TOKEN = token;
 				req.session.isAuth = true;

@@ -67,6 +67,28 @@ $(document).ready(function () {
 			}
 		});
 	});
+	$(".btnLoginAdmin").click(function(){
+		$.ajax({
+			type: "POST",
+			url: '/a/login',
+			dataType: 'application/json',
+			data: {
+        email: $("#emailadmin").val(),
+        password: $("#passwordadmin").val(),
+    	},
+			success: function (response) {
+			}, error: function (err) {
+				let response = JSON.parse(err.responseText);
+
+				if (parseInt(response.data.status) === 403) {
+					$(".log-err").text(response.data.message);
+					$(".log-err").css("display", "block");
+				} else {
+					window.location.href = "/admin";
+				}
+			}
+		});
+	});
 
 	$('.shop-btn-add-cart').click(function(e) {
 		const prodId = $(this).attr('data-prodId');
