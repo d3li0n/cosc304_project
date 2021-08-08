@@ -60,10 +60,11 @@
 			<li class="nav-item">
 				<a class="nav-link nav-header-link" href="/account">Account</a>
 			</li>
+			{{#if session.userCredentials.isAdmin }}
 			<li class="nav-item">
 				<a class="nav-link nav-header-link" href="/admin">Administrator</a>
 			</li>
-
+			{{/if}}
 			{{#if session.isAuth}}
 			<li class="nav-item">
 				<a class="nav-link nav-header-link logoutHeader" style="cursor: pointer;">Logout</a>

@@ -103,10 +103,13 @@ CREATE TABLE warehouse (
 
 CREATE TABLE shipment (
     shipmentId          INT IDENTITY,
+		orderId							INT,
     shipmentDate        DATETIME,   
     shipmentDesc        VARCHAR(100),   
     warehouseId         INT, 
     PRIMARY KEY (shipmentId),
+		FOREIGN KEY (orderId) REFERENCES ordersummary(orderId)
+        ON UPDATE CASCADE ON DELETE NO ACTION,
     FOREIGN KEY (warehouseId) REFERENCES warehouse(warehouseId)
         ON UPDATE CASCADE ON DELETE NO ACTION
 );

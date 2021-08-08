@@ -1,0 +1,59 @@
+<div class="w-75 mx-auto mb-5 mt-5">
+	<div class="back-btn mb-4">
+		<a href="/admin" class="text-dark"><i class="fas fa-chevron-left"></i> Back</a>
+	</div>
+	{{#if isEmptyList }}
+	<div class="adm-orders-table-legend">
+		<div class="row align-items-start border-bottom">
+			<div class="col">
+				Order Id
+			</div>
+			<div class="col">
+				Order Date
+			</div>
+			<div class="col">
+				Customer Id
+			</div>
+			<div class="col">
+				Customer Name
+			</div>
+			<div class="col">
+				Total amount
+			</div>
+			<div class="col">
+				Action
+			</div>
+		</div>
+	</div>
+
+	<div class="adm-orders-table">
+		{{#each shipment}}
+		<div class="row align-items-start mt-4 mb-4 border-bottom pb-2">
+			<div class="col">
+				#{{@key}}
+			</div>
+			<div class="col">
+				{{this.orderDate}}
+			</div>
+			<div class="col">
+				{{this.customerId}}
+			</div>
+			<div class="col">
+				{{this.customerName}}
+			</div>
+			<div class="col">
+				${{this.totalAmount}}
+			</div>
+			<div class="col">
+				<a href="/admin/shipments/{{@key}}" class="rounded bg-success text-light p-1">Process</a>
+			</div>
+		</div>
+		{{/each}}
+	</div>
+
+	{{else}}
+	<div class="empty-errList mt-5">
+		<p class="text-center fw-bold fs-5">Currently, we don't have any orders to review. 😥</p>
+	</div>
+	{{/if }}
+</div>
