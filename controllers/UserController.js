@@ -35,77 +35,152 @@ module.exports = {
 			next();
 		}
 	},
+	async register(req, res) {
+		if (req.session.API_TOKEN !== undefined)
+			res.status(403).send({ data: { status: 403, message: "Error: Forbidden." }});
+		const firstName = `${req.body.firstName}`;
+		const lastName = `${req.body.lastName}`;
+		const email = `${req.body.email}`;
+		const phone = `${req.body.phone}`;
+		const address = `${req.body.street}`;
+		const city = `${req.body.city}`;
+		const postalCode = `${req.body.code}`;
+		const state = `${req.body.state}`;
+		const country = `${req.body.country}`;
+		const password = `${req.body.password}`;
+		const nickname = `${req.body.nickname}`;
+		if (firstName.length < 2)
+			res.status(401).send({ data: { status: 401, message: "Error: First Name must be longer than 1 letter." }});
+		if (lastName.length < 2)
+			res.status(401).send({ data: { status: 401, message: "Error: Last Name must be longer than 1 letter." }});
+		if (!isEmailValid(email))
+			res.status(401).send({ data: { status: 401, message: "Error: Email is not valid." }});
+		if (phone.length < 6)
+			res.status(401).send({ data: { status: 401, message: "Error: Phone number is not valid. Correct formt: 123-123-1234" }});
+		if (address.length < 5)
+			res.status(401).send({ data: { status: 401, message: "Error: Street must be longer than 5 letters." }});
+		if (city.length < 4)
+			res.status(401).send({ data: { status: 401, message: "Error: City must be longer than 4 letters." }});
+		if (state.length < 2)
+			res.status(401).send({ data: { status: 401, message: "Error: State must be longer than 1 letter." }});
+		if (postalCode.length < 4 || country.length < 4)
+			res.status(401).send({ data: { status: 401, message: "Error: Postal Code and Country must be longer than 3 letters." }});
+		if (password.length < 1)
+			res.status(403).send({ data: { status: 403, message: "Error: Password must be longer than 1 letter." }});
+		if (nickname.length < 2)
+			res.status(401).send({ data: { status: 401, message: "Error: Invalid nickname. Nice try." }});
+		
+		await sql.connect(db.sqlConfig).then(pool => {
+			return pool.request()
+					.input('email', sql.VarChar, email)
+					.query('SELECT customerId FROM customer WHERE email = @email');
+		}).then(result => {
+			if (result.rowsAffected[0] !== 0) {
+				res.status(401).send({ data: { status: 401, message: "Error: Email is registered in the system." }});
+			} else {
+				sql.connect(db.sqlConfig).then(pool => {
+					return pool.request()
+						.input('firstName', sql.VarChar, firstName)
+						.input('lastName', sql.VarChar, lastName)
+						.input('phone', sql.VarChar, phone)
+						.input('email', sql.VarChar, email)
+						.input('address', sql.VarChar, address)
+						.input('city', sql.VarChar, city)
+						.input('postalCode', sql.VarChar, postalCode)
+						.input('state', sql.VarChar, state)
+						.input('country', sql.VarChar, country)
+						.input('password', sql.VarChar, password)
+						.input('nick', sql.VarChar, nickname)
+						.query('INSERT INTO customer (firstName, lastName, email, phonenum, address, city, state, postalCode, country, userid, password) VALUES (@firstName, @lastName, @email, @phone, @address, @city, @state, @postalCode, @country, @nick, @password)');
+				}).catch(err => {
+					console.log(err);
+				});
+			}
+		}).catch(err => {
+			console.log(err);
+		});	
+		res.status(200).send({ data: { status: 200, message: "Success: Account created." }});
+	},
+	registerLoad(req, res) {
+		if (req.session.API_TOKEN !== undefined)
+			res.status(301).redirect("/account");
+		else 
+			res.status(200).render('registerPage', { title: 'Register'});
+	},
 	async updateSettings(req, res) {
 		if (req.session.API_TOKEN === undefined) {
 			res.status(403).send({ data: { status: 403, message: "Error: Forbidden." }});
 		}
-		if (parseInt(req.params.settingsId) > 2 || parseInt(req.params.settingsId) < 1)
+		else if (parseInt(req.params.settingsId) > 2 || parseInt(req.params.settingsId) < 1)
 			res.status(403).send({ data: { status: 403, message: "Error: Forbidden." }});
+		else	{
+			let custId = 0;
+			jwt.verify(req.session.API_TOKEN, `${process.env.SESSION_SECRET}`, function(err, data) {
+				custId = data.userId;
+			});
+			if (parseInt(req.params.settingsId) === 1) {
+				const address = `${req.body.address}`;
+				const city = `${req.body.city}`;
+				const state = `${req.body.state}`;
+				const postalCode = `${req.body.postalCode}`;
+				const country = `${req.body.country}`;
+				if (address.length < 5)
+					res.status(401).send({ data: { status: 401, message: "Error: Street must be longer than 5 letters." }});
+
+				else if (city.length < 4)
+					res.status(401).send({ data: { status: 401, message: "Error: City must be longer than 4 letters." }});
+
+				else if (state.length < 2)
+					res.status(401).send({ data: { status: 401, message: "Error: State must be longer than 1 letter." }});
 			
-		let custId = 0;
-		jwt.verify(req.session.API_TOKEN, `${process.env.SESSION_SECRET}`, function(err, data) {
-			custId = data.userId;
-		});
-		if (parseInt(req.params.settingsId) === 1) {
-			const address = `${req.body.address}`;
-			const city = `${req.body.city}`;
-			const state = `${req.body.state}`;
-			const postalCode = `${req.body.postalCode}`;
-			const country = `${req.body.country}`;
-			if (address.length < 5)
-				res.status(401).send({ data: { status: 401, message: "Error: Street must be longer than 5 letters." }});
-
-			if (city.length < 4)
-				res.status(401).send({ data: { status: 401, message: "Error: City must be longer than 4 letters." }});
-
-			if (state.length < 2)
-				res.status(401).send({ data: { status: 401, message: "Error: State must be longer than 1 letter." }});
-			
-			if (postalCode.length < 4 || country.length < 4)
-				res.status(401).send({ data: { status: 401, message: "Error: Postal Code and Country must be longer than 3 letters." }});
-
-			sql.connect(db.sqlConfig).then(pool => {
-				return pool.request()
-						.input('id', sql.Int, custId)
-						.input('address', sql.VarChar, address)
-						.input('city', sql.VarChar, city)
-						.input('state', sql.VarChar, state)
-						.input('postal', sql.VarChar, postalCode)
-						.input('country', sql.VarChar, country)
-						.query('UPDATE customer SET address = @address, city = @city, state = @state, postalCode = @postal, country = @country WHERE customerId = @id');
-			}).catch(err => {
-				console.log(err);
-			});	
-			res.status(200).send({ data: { status: 200, message: "Success: Information updated." }});
-		} else { 
-			const oldPassword = `${req.body.oldPassword}`;
-			const newPassword = `${req.body.newPassword}`;
-
-			if (oldPassword.length < 2 || newPassword.length < 2)
-				res.status(401).send({ data: { status: 401, message: "Error: Old and New passwords must be longer than 1 letter." }});
-
-			await sql.connect(db.sqlConfig).then(pool => {
-				return pool.request()
-						.input('id', sql.Int, custId)
-						.query('SELECT password FROM customer WHERE customerId = @id');
-			}).then(result => {
-				if (result.recordset[0].password !== oldPassword)
-					res.status(401).send({ data: { status: 401, message: "Error: Old password is incorrect." }});
+				else if (postalCode.length < 4 || country.length < 4)
+					res.status(401).send({ data: { status: 401, message: "Error: Postal Code and Country must be longer than 3 letters." }});
 				else {
 					sql.connect(db.sqlConfig).then(pool => {
 						return pool.request()
 								.input('id', sql.Int, custId)
-								.input('password', sql.VarChar, newPassword)
-								.query('UPDATE customer SET password = @password WHERE customerId = @id');
+								.input('address', sql.VarChar, address)
+								.input('city', sql.VarChar, city)
+								.input('state', sql.VarChar, state)
+								.input('postal', sql.VarChar, postalCode)
+								.input('country', sql.VarChar, country)
+								.query('UPDATE customer SET address = @address, city = @city, state = @state, postalCode = @postal, country = @country WHERE customerId = @id');
+					}).catch(err => {
+						console.log(err);
+					});	
+					res.status(200).send({ data: { status: 200, message: "Success: Information updated." }});
+				}
+			} else { 
+				const oldPassword = `${req.body.oldPassword}`;
+				const newPassword = `${req.body.newPassword}`;
+
+				if (oldPassword.length < 2 || newPassword.length < 2)
+					res.status(401).send({ data: { status: 401, message: "Error: Old and New passwords must be longer than 1 letter." }});
+				else {
+					await sql.connect(db.sqlConfig).then(pool => {
+						return pool.request()
+								.input('id', sql.Int, custId)
+								.query('SELECT password FROM customer WHERE customerId = @id');
+					}).then(result => {
+						if (result.recordset[0].password !== oldPassword)
+							res.status(401).send({ data: { status: 401, message: "Error: Old password is incorrect." }});
+						else {
+							sql.connect(db.sqlConfig).then(pool => {
+								return pool.request()
+										.input('id', sql.Int, custId)
+										.input('password', sql.VarChar, newPassword)
+										.query('UPDATE customer SET password = @password WHERE customerId = @id');
+							}).catch(err => {
+								console.log(err);
+							});
+				
+							res.status(200).send({ data: { status: 200, message: "Success: Information updated." }});
+						}
 					}).catch(err => {
 						console.log(err);
 					});
-		
-					res.status(200).send({ data: { status: 200, message: "Success: Information updated." }});
 				}
-			}).catch(err => {
-				console.log(err);
-			});
+			}
 		}
 	},
 	async getUser(req, res) {
@@ -137,46 +212,50 @@ module.exports = {
 	async authUser(req, res, next) {
 
 		if (req.session.API_TOKEN !== undefined) {
-			res.status(401).send({ data: { status: 403, message: "Error: Forbidden." }});
-		}
-		const email = req.body.email;
-		const password = req.body.password;
+			res.status(403).send({ data: { status: 403, message: "Error: Forbidden." }});
+		} else {
+			const email = `${req.body.email}`;
+			const password = `${req.body.password}`;
 
-		if (!isEmailValid(email))
-			res.status(401).send({ data: { status: 403, message: "Error: Email is not valid." }});
-		if (!password || password.length < 1)
-			res.status(401).send({ data: { status: 403, message: "Error: Password is not valid." }});
-
-		await sql.connect(db.sqlConfig).then(pool => {
-				return pool.request()
+			if (!isEmailValid(email))
+				res.status(403).send({ data: { status: 403, message: "Error: Email is not valid." }});
+			else if (password.length < 1)
+				res.status(403).send({ data: { status: 403, message: "Error: Password is not valid." }});
+			else {
+				await sql.connect(db.sqlConfig).then(pool => {
+					return pool.request()
 						.input('email', sql.VarChar, email)
 						.query('select * from customer where email = @email');
-		}).then(result => {
-			if (result.recordset.length == 0)
-				res.status(401).send({ data: { status: 403, message: "Error: Account doesn't exist." }});
-			else {
-				if (result.recordset[0].password !== password)
-					res.status(401).send({ data: { status: 403, message: "Error: Password is not valid."}});
+				}).then(result => {
+				if (result.recordset.length == 0)
+					res.status(403).send({ data: { status: 403, message: "Error: Account doesn't exist." }});
+				else {
+					if (result.recordset[0].password !== password)
+						res.status(403).send({ data: { status: 403, message: "Error: Password is not valid."}});
+					else {
+						const token = jwt.sign({ userId: result.recordset[0].customerId }, `${process.env.SESSION_SECRET}`, {
+							expiresIn: '7d',
+						});
+						req.session.API_TOKEN = token;
 
-				const token = jwt.sign({ userId: result.recordset[0].customerId }, `${process.env.SESSION_SECRET}`, {
-					expiresIn: '7d',
+						let credentials = {
+							firstName: result.recordset[0].firstName,
+							lastName: `${(result.recordset[0].lastName).substr(0, 1)}.`,
+							isAdmin: result.recordset[0].isAdmin,
+							isAuthAdmin: false
+						};
+						req.session.API_TOKEN = token;
+						req.session.isAuth = true;
+						req.session.userCredentials = credentials;
+						next();
+					}
+				}
+			
+				}).catch(err => {
+					console.log(err);
 				});
-				req.session.API_TOKEN = token;
-
-				let credentials = {
-					firstName: result.recordset[0].firstName,
-					lastName: `${(result.recordset[0].lastName).substr(0, 1)}.`,
-					isAdmin: result.recordset[0].isAdmin,
-					isAuthAdmin: false
-				};
-				req.session.API_TOKEN = token;
-				req.session.isAuth = true;
-				req.session.userCredentials = credentials;
-				next();
 			}
-		}).catch(err => {
-			console.log(err);
-		});
+		}
 	},
 	async getOrders(req, res) {
 		let custId = 0;
