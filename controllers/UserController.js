@@ -54,7 +54,7 @@ module.exports = {
 			const country = `${req.body.country}`;
 			if (address.length < 5)
 				res.status(401).send({ data: { status: 401, message: "Error: Street must be longer than 5 letters." }});
-				
+
 			if (city.length < 4)
 				res.status(401).send({ data: { status: 401, message: "Error: City must be longer than 4 letters." }});
 
@@ -64,6 +64,18 @@ module.exports = {
 			if (postalCode.length < 4 || country.length < 4)
 				res.status(401).send({ data: { status: 401, message: "Error: Postal Code and Country must be longer than 3 letters." }});
 
+			sql.connect(db.sqlConfig).then(pool => {
+				return pool.request()
+						.input('id', sql.Int, custId)
+						.input('address', sql.VarChar, address)
+						.input('city', sql.VarChar, city)
+						.input('state', sql.VarChar, state)
+						.input('postal', sql.VarChar, postalCode)
+						.input('country', sql.VarChar, country)
+						.query('UPDATE customer SET address = @address, city = @city, state = @state, postalCode = @postal, country = @country WHERE customerId = @id');
+			}).catch(err => {
+				console.log(err);
+			});	
 			res.status(200).send({ data: { status: 200, message: "Success: Information updated." }});
 		} else { 
 			const oldPassword = `${req.body.oldPassword}`;
