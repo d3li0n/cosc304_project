@@ -36,7 +36,16 @@ module.exports = {
 		}
 	},
 	async getUser(req, res) {
-		res.status(200).render('accountPage', { title: 'My account' });
+		const user = {
+			custId: 2,
+			firstName: `Bobby`,
+			lastName: `Brown`,
+			email: `bobby.brown@hotmail.ca`,
+			phonenum: `572-342-89-11`,
+			address: `222 Bush Avenue, Boston, MA, 22222, United States`,
+			id: `bobby`
+		};
+		res.status(200).render('accountPage', { title: 'My account', user: user });
 	},
 	async authUser(req, res, next) {
 
