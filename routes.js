@@ -71,9 +71,7 @@ router.get('/product/:id', (req, res) => {
 	res.status(200).render('productPage', { title: 'Product', reviews: reviewList, product: product });
 });
 
-router.get('/account', userController.validateApiToken, (req, res) => {
-
-});
+router.get('/account', userController.validateApiToken, userController.getUser);
 
 router.get('/login', (req, res) => {
 	if (req.session.API_TOKEN === undefined) {
