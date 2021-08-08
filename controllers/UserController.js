@@ -35,6 +35,67 @@ module.exports = {
 			next();
 		}
 	},
+	async updateSettings(req, res) {
+		if (req.session.API_TOKEN === undefined) {
+			res.status(403).send({ data: { status: 403, message: "Error: Forbidden." }});
+		}
+		if (parseInt(req.params.settingsId) > 2 || parseInt(req.params.settingsId) < 1)
+			res.status(403).send({ data: { status: 403, message: "Error: Forbidden." }});
+			
+		let custId = 0;
+		jwt.verify(req.session.API_TOKEN, `${process.env.SESSION_SECRET}`, function(err, data) {
+			custId = data.userId;
+		});
+		if (parseInt(req.params.settingsId) === 1) {
+			const address = `${req.body.address}`;
+			const city = `${req.body.city}`;
+			const state = `${req.body.state}`;
+			const postalCode = `${req.body.postalCode}`;
+			const country = `${req.body.country}`;
+			if (address.length < 5)
+				res.status(401).send({ data: { status: 401, message: "Error: Street must be longer than 5 letters." }});
+				
+			if (city.length < 4)
+				res.status(401).send({ data: { status: 401, message: "Error: City must be longer than 4 letters." }});
+
+			if (state.length < 2)
+				res.status(401).send({ data: { status: 401, message: "Error: State must be longer than 1 letter." }});
+			
+			if (postalCode.length < 4 || country.length < 4)
+				res.status(401).send({ data: { status: 401, message: "Error: Postal Code and Country must be longer than 3 letters." }});
+
+			res.status(200).send({ data: { status: 200, message: "Success: Information updated." }});
+		} else { 
+			const oldPassword = `${req.body.oldPassword}`;
+			const newPassword = `${req.body.newPassword}`;
+
+			if (oldPassword.length < 2 || newPassword.length < 2)
+				res.status(401).send({ data: { status: 401, message: "Error: Old and New passwords must be longer than 1 letter." }});
+
+			await sql.connect(db.sqlConfig).then(pool => {
+				return pool.request()
+						.input('id', sql.Int, custId)
+						.query('SELECT password FROM customer WHERE customerId = @id');
+			}).then(result => {
+				if (result.recordset[0].password !== oldPassword)
+					res.status(401).send({ data: { status: 401, message: "Error: Old password is incorrect." }});
+				else {
+					sql.connect(db.sqlConfig).then(pool => {
+						return pool.request()
+								.input('id', sql.Int, custId)
+								.input('password', sql.VarChar, newPassword)
+								.query('UPDATE customer SET password = @password WHERE customerId = @id');
+					}).catch(err => {
+						console.log(err);
+					});
+		
+					res.status(200).send({ data: { status: 200, message: "Success: Information updated." }});
+				}
+			}).catch(err => {
+				console.log(err);
+			});
+		}
+	},
 	async getUser(req, res) {
 		const user = {
 			custId: 2,
@@ -91,7 +152,70 @@ module.exports = {
 			console.log(err);
 		});
 	},
+	async getOrders(req, res) {
+		let custId = 0;
+		let orders = {}
+		jwt.verify(req.session.API_TOKEN, `${process.env.SESSION_SECRET}`, function(err, data) {
+			custId = data.userId;
+		});
+		await sql.connect(db).then(pool => {
+			return pool.request()
+						.input('user', sql.Int, custId)
+						.query`SELECT orderproduct.orderId, orderDate,
+			totalAmount, orderproduct.productId, quantity, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry, product.productName FROM ordersummary
+			JOIN orderproduct ON orderproduct.orderId = ordersummary.orderId JOIN product ON product.productId = orderproduct.productId WHERE ordersummary.customerId = @user AND shiptoAddress IS NOT NULL AND shiptoCity IS NOT NULL AND shiptoState IS NOT NULL AND shiptoPostalCode IS NOT NULL AND shiptoCountry IS NOT NULL ORDER BY orderDate DESC`
+		}).then(result => {
+			if (result.recordsets[0] !== undefined) {
+				for(var i = 0; i < result.rowsAffected; i++) {
+					if (orders[moment(result.recordsets[0][i].orderDate).format('YYYY-MM-DD HH:mm')] === undefined) {
+						orders[moment(result.recordsets[0][i].orderDate).format('YYYY-MM-DD HH:mm')] = {
+							orderId: result.recordsets[0][i].orderId,
+							orderDate: moment(result.recordsets[0][i].orderDate).format('YYYY-MM-DD HH:mm'),
+							address: `${result.recordsets[0][i].shiptoAddress}, ${result.recordsets[0][i].shiptoCity}, ${result.recordsets[0][i].shiptoState}, ${result.recordsets[0][i].shiptoPostalCode}, ${result.recordsets[0][i].shiptoCountry}`,
+							totalAmount: (result.recordsets[0][i].totalAmount).toFixed(2),
+							products: {}
+						};
+						orders[moment(result.recordsets[0][i].orderDate).format('YYYY-MM-DD HH:mm')].products[result.recordsets[0][i].productId] = {
+							quantity: result.recordsets[0][i].quantity,
+							productName: result.recordsets[0][i].productName
+						};
+					} else {
+						orders[moment(result.recordsets[0][i].orderDate).format('YYYY-MM-DD HH:mm')].products[result.recordsets[0][i].productId] = {
+							quantity: result.recordsets[0][i].quantity,
+							productName: result.recordsets[0][i].productName
+						};
+					}	
+				}
+			}
+		}).catch(err => {
+			console.log(err);
+		});
+		res.status(200).render('accountOrdersPage', { title: 'Account Orders', orders: orders });
+	},
+	async getUserSettings(req, res) {
+		let custId = 0;
+		let user = {}
+		jwt.verify(req.session.API_TOKEN, `${process.env.SESSION_SECRET}`, function(err, data) {
+			custId = data.userId;
+		});
+		await sql.connect(db.sqlConfig).then(pool => {
+			return pool.request()
+					.input('id', sql.Int, custId)
+					.query('SELECT address, city, state, postalCode, country FROM customer WHERE customerId = @id');
+		}).then(result => {
 
+			user = {
+				address: result.recordset[0].address,
+				city: result.recordset[0].city,
+				state: result.recordset[0].state,
+				postalCode: result.recordset[0].postalCode,
+				country: result.recordset[0].country
+			};
+			res.status(200).render('accountSettingsPage', { title: 'Account Settings', user: user });
+		}).catch(err => {
+			console.log(err);
+		});
+	},
 	async fetchCart(req, res) {
 		let custId = 0;
 		
@@ -101,7 +225,6 @@ module.exports = {
 		
 		if (req.session.productList === undefined || (Object.keys(req.session.productList).length === 0)) {
 			products = req.session.productList;
-			console.log('detected an empty cart on login');
 			await sql.connect(db.sqlConfig).then(pool => {
 				return pool.request()
 						.input('id', sql.Int, parseInt(custId))
@@ -133,7 +256,6 @@ module.exports = {
 				res.status(403).send({ data: { status: 403, message: "Error: Invalid Statement."}});
 			});
 		} else {
-			console.log('detected not empty on cart');
 			await sql.connect(db.sqlConfig).then(pool => {
 				return pool.request()
 						.input('id', sql.Int, parseInt(custId))
