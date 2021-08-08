@@ -1,0 +1,70 @@
+<div class="w-75 mx-auto mb-5 mt-5">
+	<div class="back-btn">
+		<a href="/store" class="text-dark"><i class="fas fa-chevron-left"></i> Back</a>
+	</div>
+
+	<div class="row mt-4">
+		<div class="col-sm-2">
+			<div class="account-categories w-75">
+				<p class="fw-bold text-dark mb-3 fs-2">My Account</p>
+				<a class="text-dark d-block mb-3 fw-bold p-1" href="/account">Account</a>
+				<a class="text-dark d-block mb-3 fw-bold rounded p-1" href="/account/orders">Orders</a>
+				<a class="text-light d-block mb-3 rounded p-1" style="background-color:#F19953;" href="/account/settings">Settings</a>
+			</div>
+		</div>
+		<div class="col-sm-10">
+			<div class="bg-light d-block">
+				<div class="account-section p-4">
+					<p class="fs-3 fw-bold text-dark">Settings</p>
+					<hr/>
+					<div class="row">
+						<div class="col-sm-5">
+							<p class="fs-4 fw-bold text-dark">Shipping Address</p>
+							<p>You can update your address in this form. Note, your previous orders will not be affected, and the address of delivery will remain the same. If you want to update your shipping address for one of your orders, please contact us.</p>
+						</div>
+						<div class="col-sm-7">
+							<div class="row mb-2">
+								<div class="col"><label class="form-control-label text-dark">Street Name</label> <input type="text" value="{{user.address}}" class="form-control address"></div>
+							</div>
+							<div class="row mb-2">
+								<div class="col"><label class="form-control-label text-dark">City</label> <input type="text" value="{{user.city}}" class="form-control city"></div>
+								<div class="col"><label class="form-control-label text-dark">State</label> <input type="text" value="{{user.state}}" class="form-control state"></div>
+							</div>
+							<div class="row mb-2">
+								<div class="col"><label class="form-control-label text-dark">Postal Code</label> <input type="text" value="{{user.postalCode}}" class="form-control postalCode"></div>
+								<div class="col"><label class="form-control-label text-dark">Country</label> <input type="text" value="{{user.country}}" class="form-control country"></div>
+							</div>
+							<div class="row mb-2 addressFormError" style="display:none;">
+								<div class="col fw-bold text-center response"></div>
+							</div>
+							<div class="row mt-2 mb-2">
+								<a class="d-block text-light rounded text-center p-2 mx-auto w-75 btnAccountChangeAddress" style="background-color:#F19953;">Change Address</a>
+							</div>
+						</div>
+					</div>
+					<hr/>
+					<div class="row">
+						<div class="col-sm-5">
+							<p class="fs-4 fw-bold text-dark">Password</p>
+							<p>You can update your password in this form. Note, you must provide your old password to update it. If you don't remember it, how did you even login? Please, logout from this account, and restore your password if you don't remember the old one.</p>
+						</div>
+						<div class="col-sm-7">
+							<div class="row mb-2">
+								<div class="col"><label class="form-control-label text-dark">Old Password</label> <input type="password" placeholder="Old Password" class="form-control oldPassword"></div>
+							</div>
+							<div class="row mb-2">
+								<div class="col"><label class="form-control-label text-dark">New Password</label> <input type="password" placeholder="New Password" class="form-control newPassword"></div>
+							</div>
+							<div class="row mb-2 passwordFormError" style="display:none;">
+								<div class="col fw-bold text-center response"></div>
+							</div>
+							<div class="row mt-2 mb-2">
+								<a class="d-block text-light rounded text-center p-2 mx-auto w-75 btnAccountChangePassword" style="background-color:#F19953;">Change Password</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

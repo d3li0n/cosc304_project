@@ -1,5 +1,50 @@
 <div class="w-75 mx-auto mb-5 mt-5">
-	<div class="back-btn mb-4">
+	<div class="back-btn">
 		<a href="/store" class="text-dark"><i class="fas fa-chevron-left"></i> Back</a>
+	</div>
+
+	<div class="row mt-4">
+		<div class="col-sm-2">
+			<div class="account-categories w-75">
+				<p class="fw-bold text-dark mb-3 fs-2">My Account</p>
+				<a class="text-light d-block mb-3 rounded p-1" style="background-color:#F19953;" href="/account">Account</a>
+				<a class="text-dark d-block mb-3 fw-bold rounded p-1" href="/account/orders">Orders</a>
+				<a class="text-dark d-block mb-3 fw-bold rounded p-1" href="/account/settings">Settings</a>
+			</div>
+		</div>
+		<div class="col-sm-10">
+			<div class="bg-light d-block">
+				<div class="account-section p-4">
+					<p class="fs-3 fw-bold text-dark">Personal information</p>
+					<hr/>
+					<div class="row">
+						<div class="col-sm-5">
+							<p>General information about your account is stored here. You cannot change it here, but you can go to the Settings and update it there.</p>
+						</div>
+						<div class="col-sm-7">
+							<div class="row mb-2">
+								<div class="col"><label class="form-control-label text-dark">Customer Id</label> <input type="text" placeholder="{{user.custId}}" disabled class="form-control"></div>
+							</div>
+							<div class="row mb-2">
+								<div class="col"><label class="form-control-label text-dark">First Name</label> <input type="text" placeholder="{{user.firstName}}" disabled class="form-control"></div>
+								<div class="col"><label class="form-control-label text-dark">Last Name</label> <input type="text" placeholder="{{user.lastName}}" disabled class="form-control"></div>
+							</div>
+							<div class="row mb-2">
+								<div class="col"><label class="form-control-label text-dark">Email</label> <input type="text" placeholder="{{user.email}}" disabled class="form-control"></div>
+							</div>
+							<div class="row mb-2">
+								<div class="col"><label class="form-control-label text-dark">Phone number</label> <input type="text" placeholder="{{user.phonenum}}" disabled class="form-control"></div>
+							</div>
+							<div class="row mb-2">
+								<div class="col"><label class="form-control-label text-dark">Address</label> <input type="text" placeholder="{{user.address}}" disabled class="form-control"></div>
+							</div>
+							<div class="row mb-2">
+								<div class="col"><label class="form-control-label text-dark">User Id</label> <input type="text" placeholder="{{user.id}}" disabled class="form-control"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>

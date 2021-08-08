@@ -173,22 +173,21 @@ module.exports = {
 		const listLengthBool = (Object.keys(shipments).length) ? true : false;
 		res.status(200).render('adminShipmentPage', { title: 'Shipments', isEmptyList: listLengthBool, shipment: shipments });
 	},
-	async loadSales(req, res) {
-		// from earliest day to present
-		const sales = {
-			'2020-10-20': {
-				totalSum: (20000.20).toFixed(2),
-				totalOrders: 200
-			},
-			'2020-10-19': {
-				totalSum: (2033300.20).toFixed(2),
-				totalOrders: 200
-			},
-			'2020-10-10': {
-				totalSum: (100.20).toFixed(2),
-				totalOrders: 200
-			}
-		}
+	async loadSales(req, res) {		
+		let sales = {};
+		await sql.connect(db.sqlConfig).then(pool => {
+			return sql.query('SELECT CAST(orderDate AS DATE) as dateField, SUM(totalAmount) as tAmount, COUNT(orderId) as totalOrders FROM ordersummary GROUP BY CAST(orderDate AS DATE)');
+		}).then(result => {
+			for (var i=0;i<result.rowsAffected;i++){
+				console.log(result.recordset[i].totalOrders);
+				sales[moment(result.recordset[i].dateField).format('YYYY-MM-DD')] = {
+					totalSum: (result.recordset[i].tAmount).toFixed(2),
+					totalOrders: result.recordset[i].totalOrders,
+				};
+		}}).catch(err => {
+			console.log(err);
+			res.status(403).send({ data: { status: 403, message: "Error: Invalid Statement."}});
+		});
 
 		const listLengthBool = (Object.keys(sales).length) ? true : false;
 		res.status(200).render('adminSalesPage', { title: 'Sales', isEmptyList: listLengthBool, sales: sales });

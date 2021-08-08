@@ -73,6 +73,13 @@ router.get('/product/:id', (req, res) => {
 
 router.get('/account', userController.validateApiToken, userController.getUser);
 
+router.use('/account/*', userController.validateApiToken);
+
+router.get('/account/settings', userController.getUserSettings);
+router.put('/account/settings/:settingsId/edit', userController.updateSettings);
+
+router.get('/account/orders', userController.getOrders);
+
 router.get('/login', (req, res) => {
 	if (req.session.API_TOKEN === undefined) {
 		res.status(200).render('loginPage', { title: 'Login' }); 
@@ -91,10 +98,6 @@ router.post('/logout', (req, res) => {
 		res.status(200).send({ data: { code: 200, message: "Success." }});
 	}
 })
-
-router.post('/product/:id/addCart', (req, res) => {
-	// addcart.js
-});
 
 router.use('/admin/*', adminController.auth);
 

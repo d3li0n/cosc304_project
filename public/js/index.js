@@ -109,6 +109,63 @@ $(document).ready(function () {
 		});
 	});
 
+	$('.btnAccountChangeAddress').click(function(e) {
+		$.ajax({
+			type: "PUT",
+			url: `/account/settings/1/edit`,
+			dataType: 'application/json',
+			data: {
+				address: $('.address').val(),
+				city: $('.city').val(),
+				state: $('.state').val(),
+				postalCode: $('.postalCode').val(),
+				country: $('.country').val()
+			},
+			success: function (response) {
+			}, error: function (err) {
+				let response = JSON.parse(err.responseText);
+
+				if (parseInt(response.data.status) === 403 || parseInt(response.data.status) === 401) {
+					$('.addressFormError .response').addClass('text-danger');
+					$('.addressFormError .response').text(response.data.message);
+					$('.addressFormError').show();
+				} else {
+					$('.addressFormError .response').removeClass('text-danger');
+					$('.addressFormError .response').addClass('text-success');
+					$('.addressFormError .response').text(response.data.message);
+					$('.addressFormError').show();
+				}
+			}
+		});
+	});
+
+	$('.btnAccountChangePassword').click(function(e) {
+		$.ajax({
+			type: "PUT",
+			url: `/account/settings/2/edit`,
+			dataType: 'application/json',
+			data: {
+				oldPassword: $('.oldPassword').val(),
+				newPassword: $('.newPassword').val()
+			},
+			success: function (response) {
+			}, error: function (err) {
+				let response = JSON.parse(err.responseText);
+
+				if (parseInt(response.data.status) === 403 || parseInt(response.data.status) === 401) {
+					$('.passwordFormError .response').addClass('text-danger');
+					$('.passwordFormError .response').text(response.data.message);
+					$('.passwordFormError').show();
+				} else {
+					$('.passwordFormError .response').removeClass('text-danger');
+					$('.passwordFormError .response').addClass('text-success');
+					$('.passwordFormError .response').text(response.data.message);
+					$('.passwordFormError').show();
+				}
+			}
+		});
+	});
+
 	$('.logoutHeader').click(function(e) {  
 		$.ajax({
 			type: "POST",
