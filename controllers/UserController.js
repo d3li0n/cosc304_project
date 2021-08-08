@@ -109,15 +109,29 @@ module.exports = {
 		}
 	},
 	async getUser(req, res) {
-		const user = {
-			custId: 2,
-			firstName: `Bobby`,
-			lastName: `Brown`,
-			email: `bobby.brown@hotmail.ca`,
-			phonenum: `572-342-89-11`,
-			address: `222 Bush Avenue, Boston, MA, 22222, United States`,
-			id: `bobby`
-		};
+		let custId = 0;
+		let user = {};
+		jwt.verify(req.session.API_TOKEN, `${process.env.SESSION_SECRET}`, function(err, data) {
+			custId = data.userId;
+		});
+		await sql.connect(db).then(pool =>{
+			return pool.request()
+				.input('custId', sql.Int, custId)
+				.query('SELECT firstName, lastName, email, phonenum, address, city, state, postalCode, country, userid FROM customer WHERE customerId =@custId');
+		}).then(result=>{
+			user = {			
+				custId: custId,
+				firstName: result.recordset[0].firstName,
+				lastName: result.recordset[0].lastName,
+				email: result.recordset[0].email,
+				phonenum: result.recordset[0].phonenum,
+				address: `${result.recordset[0].address}, ${result.recordset[0].city}, ${result.recordset[0].state}, ${result.recordset[0].postalCode}, ${result.recordset[0].country}`,
+				id: result.recordset[0].userid
+			};
+		}).catch(err => {
+			console.log(err);
+		});
+
 		res.status(200).render('accountPage', { title: 'My account', user: user });
 	},
 	async authUser(req, res, next) {
