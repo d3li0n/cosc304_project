@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS category;
 DROP TABLE IF EXISTS ordersummary;
 DROP TABLE IF EXISTS paymentmethod;
 DROP TABLE IF EXISTS customer;
-
+DROP TABLE IF EXISTS token;
 
 CREATE TABLE customer (
     customerId          INT IDENTITY,
@@ -138,6 +138,17 @@ CREATE TABLE review (
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (productId) REFERENCES product(productId)
         ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE token (
+		restoreId						INT IDENTITY,
+    customerId					INT,
+    token      					VARCHAR(20),
+		expiresAt						DATETIME,
+		isUsed							BIT NOT NULL DEFAULT(0),
+		PRIMARY KEY(restoreId),    
+    FOREIGN KEY (customerId) REFERENCES customer(customerId)
+        ON UPDATE CASCADE ON DELETE CASCADE,
 );
 
 INSERT INTO category(categoryName) VALUES ('Fire');
