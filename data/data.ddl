@@ -8,9 +8,8 @@ DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS category;
 DROP TABLE IF EXISTS ordersummary;
 DROP TABLE IF EXISTS paymentmethod;
-DROP TABLE IF EXISTS customer;
 DROP TABLE IF EXISTS token;
-
+DROP TABLE IF EXISTS customer;
 CREATE TABLE customer (
     customerId          INT IDENTITY,
     firstName           VARCHAR(40),
@@ -175,19 +174,6 @@ INSERT INTO customer (firstName, lastName, email, phonenum, address, city, state
 INSERT INTO customer (firstName, lastName, email, phonenum, address, city, state, postalCode, country, userid, password) VALUES ('Darren', 'Doe', 'oe@doe.com', '250-807-2222', '444 Dover Lane', 'Kelowna', 'BC', 'V1V 2X9', 'Canada', 'darren' , 'pw');
 INSERT INTO customer (firstName, lastName, email, phonenum, address, city, state, postalCode, country, userid, password) VALUES ('Elizabeth', 'Elliott', 'engel@uiowa.edu', '555-666-7777', '555 Everwood Street', 'Iowa City', 'IA', '52241', 'United States', 'beth' , 'test');
 
-DECLARE @warehouseId int
-INSERT INTO warehouse (warehouseName) VALUES ('warehouse1')
-SELECT @warehouseId = @@IDENTITY
-INSERT INTO productinventory (productId,warehouseId,quantity,price) VALUES (1,@warehouseId,1,145)
-INSERT INTO productinventory (productId,warehouseId,quantity,price) VALUES (2,@warehouseId,5,439)
-INSERT INTO productinventory (productId,warehouseId,quantity,price) VALUES (3,@warehouseId,4,124)
-INSERT INTO productinventory (productId,warehouseId,quantity,price) VALUES (4,@warehouseId,3,389)
-INSERT INTO productinventory (productId,warehouseId,quantity,price) VALUES (5,@warehouseId,4,89.75)
-INSERT INTO productinventory (productId,warehouseId,quantity,price) VALUES (6,@warehouseId,5,279)
-INSERT INTO productinventory (productId,warehouseId,quantity,price) VALUES (7,@warehouseId,2,176)
-INSERT INTO productinventory (productId,warehouseId,quantity,price) VALUES (8,@warehouseId,4,176)
-INSERT INTO productinventory (productId,warehouseId,quantity,price) VALUES (9,@warehouseId,3,5376.23);
-
 DECLARE @orderId int
 INSERT INTO ordersummary (customerId,  orderDate, totalAmount, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry) VALUES (1, '2019-10-15 10:25:55', 410.75, '103 AnyWhere Street', 'Winnipeg', 'MB', 'R3X 45T', 'Canada')
 SELECT @orderId = @@IDENTITY
@@ -223,11 +209,20 @@ INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId,
 INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 3, 2, 124)
 INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId, 2, 3, 439);
 
-
-
-
 ALTER TABLE customer ADD isAdmin BIT NOT NULL DEFAULT(0);
 UPDATE customer SET isAdmin = 1 WHERE customerId = 2;
 
 ALTER TABLE productinventory
 ADD CONSTRAINT CH_CheckForNegative CHECK(quantity >=0);
+
+INSERT INTO warehouse (warehouseName) VALUES ('warehouse1')
+INSERT INTO productinventory (productId,warehouseId,quantity,price) VALUES (1,1,1,145)
+INSERT INTO productinventory (productId,warehouseId,quantity,price) VALUES (2,1,5,439)
+INSERT INTO productinventory (productId,warehouseId,quantity,price) VALUES (3,1,4,124)
+INSERT INTO productinventory (productId,warehouseId,quantity,price) VALUES (4,1,3,389)
+INSERT INTO productinventory (productId,warehouseId,quantity,price) VALUES (5,1,4,89.75)
+INSERT INTO productinventory (productId,warehouseId,quantity,price) VALUES (6,1,5,279)
+INSERT INTO productinventory (productId,warehouseId,quantity,price) VALUES (7,1,2,176)
+INSERT INTO productinventory (productId,warehouseId,quantity,price) VALUES (8,1,4,176)
+INSERT INTO productinventory (productId,warehouseId,quantity,price) VALUES (9,1,3,5376.23);
+

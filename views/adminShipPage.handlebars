@@ -14,7 +14,7 @@
 						Warehouse Name:
 					</div>
 					<div class="col-sm-6 d-block fw-bold">
-						Canada Shipment International
+						{{ warehouseName }}
 					</div>
 				</div>
 			</div>
@@ -77,19 +77,11 @@
 					Warehouse Information Log
 				</p>
 			</div>
+			<div class="ship-log">
 
-			<div class="bg-light p-2 d-block shiplog-border-success mb-3">
-				Order Product Name: <span class="fw-bold">Tasty Cookies</span>. Quantity: <span class="fw-bold">3</span>. Previous Inventory: <span class="fw-bold">3</span>. New Inventory: <span class="fw-bold">2</span>.
 			</div>
-			<div class="bg-light p-2 d-block shiplog-border-failure mb-3">
-				Order Product Name: <span class="fw-bold">Tasty Cookies</span>. <span class="text-danger fw-bold">Not enough products in Warehouse</span>. 
-			</div>
+			<div class="ship-status">
 
-			<div class="bg-success p-2 d-block text-white text-center mt-4">
-				Shipment Successfully Processed.
-			</div>
-			<div class="bg-danger p-2 d-block text-white text-center mt-4">
-				Shipment Failed.
 			</div>
 		</div>
 	</div>

@@ -256,6 +256,38 @@ $(document).ready(function () {
 			}
 		});
 	});
+	$('#btnShipFinalForm').click(function(e) {
+		const pathArray = window.location.pathname.split('/'); 
+		$.ajax({
+			type: "POST",
+			url: `/admin/ship/${pathArray[3]}`,
+			dataType: 'application/json',
+			success: function (response) {
+			}, error: function (err) {
+				let response = JSON.parse(err.responseText);
+				
+				const data = response.data.ship;
+				$('#btnShipFinalForm').hide();
+
+				Object.keys(data).forEach(key => {
+					if(data[key].status) {
+						$('.ship-log').append(`<div class="bg-light p-2 d-block shiplog-border-success mb-3">
+						Order Product Name: <span class="fw-bold">${data[key].prodName}</span>. Quantity: <span class="fw-bold">${data[key].quantity}</span>. Previous Inventory: <span class="fw-bold">${data[key].prevInventory}</span>. New Inventory: <span class="fw-bold">${data[key].newInventory}</span>.
+						</div>`);
+					} else {
+						$('.ship-log').append(`<div class="bg-light p-2 d-block shiplog-border-failure mb-3">
+						Order Product Name: <span class="fw-bold">${data[key].prodName}</span>. <span class="text-danger fw-bold">Not enough products in Warehouse</span>. 
+						</div>`);
+					}
+				});
+				if (response.data.status) {
+					$('.ship-status').html(`<div class="bg-success p-2 d-block text-white text-center mt-4">Shipment Successfully Processed.</div>`)
+				} else {
+					$('.ship-status').html(`<div class="bg-danger p-2 d-block text-white text-center mt-4">Shipment Failed.</div>`);
+				}
+			}
+		});
+	});
 	$('#btnRestoreFinalForm').click(function(e) { 
 		const pathArray = window.location.pathname.split('/'); 
 		$.ajax({

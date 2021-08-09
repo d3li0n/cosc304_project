@@ -107,7 +107,7 @@ router.post('/logout', (req, res) => {
 	}
 })
 
-//router.use('/admin/*', adminController.auth);
+router.use('/admin/*', adminController.auth);
 
 router.get('/admin', adminController.auth, (req, res) => {
 	res.status(200).render('admin', { title: 'Admin Portal' });
@@ -124,6 +124,8 @@ router.get('/admin/users', adminController.loadUsers);
 router.get('/admin/shipments', adminController.loadShipments);
 
 router.get('/admin/shipments/:id', adminController.loadShipment);
+
+router.post('/admin/ship/:id', adminController.ship);
 
 router.get('/admin/orders', adminController.loadOrders );
 
