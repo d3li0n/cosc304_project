@@ -1,5 +1,88 @@
 <div class="w-75 mx-auto mb-5 mt-5">
 	<div class="back-btn mb-4">
-		<a href="/admin" class="text-dark"><i class="fas fa-chevron-left"></i> Back</a>
+		<a href="/admin/shipments" class="text-dark"><i class="fas fa-chevron-left"></i> Back</a>
+	</div>
+
+	<div class="row mb-4">
+		<div class="col-sm-5">
+			<div class="d-block bg-light p-4">
+				<p class="ship-admin-title fw-bold fs-4">
+					Warehouse Information
+				</p>
+				<div class="row">
+					<div class="col-sm-6 d-block">
+						Warehouse Name:
+					</div>
+					<div class="col-sm-6 d-block fw-bold">
+						{{ warehouseName }}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-5">
+			<div class="d-block bg-light p-4">
+				<p class="ship-admin-title fw-bold fs-4">
+					Shipment Information
+				</p>
+				<div class="row mb-4">
+					<div class="col-sm-6 d-block">
+						Customer Name:
+					</div>
+					<div class="col-sm-6 d-block fw-bold">
+						{{ ship.name }}
+					</div>
+				</div>
+				<div class="row mb-4">
+					<div class="col-sm-6 d-block">
+						Customer Address:
+					</div>
+					<div class="col-sm-6 d-block fw-bold">
+						{{ ship.address }}
+					</div>
+				</div>
+				<div class="row mb-4">
+					<div class="col-sm-6 d-block">
+						Customer Phone:
+					</div>
+					<div class="col-sm-6 d-block fw-bold">
+						{{ ship.phone }}
+					</div>
+				</div>
+				<div class="row mb-4">
+					<div class="col-sm-6 d-block">
+						Total Amount:
+					</div>
+					<div class="col-sm-6 d-block fw-bold">
+						${{ ship.amount }}
+					</div>
+				</div>
+				<div class="row mb-4">
+					<div class="col-sm-6 d-block">
+						Order:
+					</div>
+					<div class="col-sm-6 d-block fw-bold">
+						{{#each ship.products }}
+						<span>{{ this.name }} - {{ this.quantity }}</span><br/>
+						{{/each}}
+					</div>
+				</div>
+			</div>
+			<div class="row justify-content-center my-3 px-3"> <button class="btn-color text-center text-white" id="btnShipFinalForm">Process Order</button> </div>
+		</div>
+		<div class="col-sm-7">
+			<div class="d-block bg-light px-3 pt-3 pb-1 mb-4">
+				<p class="ship-admin-title fw-bold fs-4 text-center">
+					Warehouse Information Log
+				</p>
+			</div>
+			<div class="ship-log">
+
+			</div>
+			<div class="ship-status">
+
+			</div>
+		</div>
 	</div>
 </div>

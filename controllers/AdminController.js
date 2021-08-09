@@ -27,6 +27,25 @@ function isEmailValid(email) {
 	return true;
 }
 
+async function processShipment(quantity, product) {
+	let isExecuted = false;
+	const transaction = new sql.Transaction()
+	transaction.begin(err => {
+		const request = new sql.Request(transaction)
+			request.query(`UPDATE productinventory SET quantity = quantity - ${quantity} WHERE productId = ${product}`, (err, result) => {
+				if (!err) {
+					transaction.commit(err => {
+						if(!err)
+							isExecuted = !isExecuted;
+					})
+				} else {
+					transaction.rollback();
+				}
+			});
+	});
+	return Promise.resolve(isExecuted);
+}
+
 module.exports = {
 	async validate(req, res, next) {
 		if (req.session.API_TOKEN === undefined || req.session.userCredentials === undefined || !req.session.userCredentials.isAdmin) {
@@ -155,7 +174,134 @@ module.exports = {
 
 		res.status(200).render('adminUsersPage', { title: 'Users', isEmptyList: listLengthBool, users: users });
 	},
-	async loadShipments(req, res) {
+	async loadShipment(req, res) {
+		const shipId = parseInt(req.params.id);
+		let shipArr = {};
+		let warehouse = '';
+
+		if (shipId < 1)
+			res.status(301).redirect('/admin');
+		else {
+			await sql.connect(db).then(pool => {
+				return sql.query`SELECT warehouseName FROM warehouse WHERE warehouseId = 1`
+			}).then(result => {
+				if (result.rowsAffected[0] !== 0)
+				 	warehouse = `${result.recordset[0].warehouseName}`;
+			}).catch(err => {
+				console.log(err);
+			});
+			await sql.connect(db).then(pool => {
+				return pool.request()
+							.input('order', sql.Int, shipId)
+							.query`SELECT orderproduct.orderId, orderDate, firstName, lastName, customer.phonenum, product.productId,
+				totalAmount, quantity, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry, product.productName FROM ordersummary
+				JOIN orderproduct ON orderproduct.orderId = ordersummary.orderId JOIN product ON product.productId = orderproduct.productId JOIN customer ON customer.customerId = ordersummary.customerId WHERE ordersummary.orderId = @order AND shiptoAddress IS NOT NULL AND shiptoCity IS NOT NULL AND shiptoState IS NOT NULL AND shiptoPostalCode IS NOT NULL AND shiptoCountry IS NOT NULL`
+			}).then(result => {
+				if (result.rowsAffected[0] === 0) {
+					res.status(301).redirect('/admin');
+				} else {
+					shipArr = {
+						name: `${result.recordset[0].firstName} ${result.recordset[0].lastName}`,
+						address: `${result.recordset[0].shiptoAddress}, ${result.recordset[0].shiptoCity}, ${result.recordset[0].shiptoState}, ${result.recordset[0].shiptoPostalCode}, ${result.recordset[0].shiptoCountry}`,
+						phone: `${result.recordset[0].phonenum}`,
+						amount: (result.recordset[0].totalAmount).toFixed(2),
+						products: {}
+					};
+					for(var i = 0; i < result.rowsAffected; i++) {
+						shipArr.products[i] = {
+							name: result.recordsets[0][i].productName,
+							prodId: result.recordsets[0][i].productId,
+							quantity: result.recordsets[0][i].quantity
+						};
+					}
+					res.status(200).render('adminShipPage', { title: 'Ship Page', ship: shipArr, warehouseName: warehouse });
+				}
+			}).catch(err => {
+				console.log(err);
+			});
+		}
+	},
+	async ship(req, res) {
+		const shipId = parseInt(req.params.id);
+		if (shipId < 1)
+			res.status(403).send({ data: { status: 403, message: "Error: Invalid Statement."}});
+		else {
+			let prodarr = {};
+
+			await sql.connect(db).then(pool => {
+				return pool.request()
+							.input('order', sql.Int, shipId)
+							.query`SELECT orderproduct.orderId, product.productId, orderproduct.quantity, orderproduct.price, product.productName, productinventory.quantity as invquantity FROM ordersummary
+							JOIN orderproduct ON orderproduct.orderId = ordersummary.orderId JOIN product 
+							ON product.productId = orderproduct.productId JOIN productinventory ON productinventory.productId = orderproduct.productId
+							WHERE ordersummary.orderId = @order AND shiptoAddress 
+							IS NOT NULL AND shiptoCity IS NOT NULL AND 
+							shiptoState IS NOT NULL AND shiptoPostalCode 
+							IS NOT NULL AND shiptoCountry IS NOT NULL`
+			}).then(result => {
+				if (result.rowsAffected[0] === 0) {
+					res.status(403).send({ data: { status: 403, message: "Error: Invalid Statement."}});
+				} else {
+					for(var i = 0; i < result.rowsAffected[0]; i++) {
+						prodarr[i] = {
+							prodId: result.recordsets[0][i].productId,
+							prodName: result.recordsets[0][i].productName,
+							quantity: result.recordsets[0][i].quantity,
+							inventory: result.recordsets[0][i].invquantity,
+							price: result.recordsets[0][i].price
+						}
+					}
+				}
+			}).catch(err => {
+				console.log(err);
+			});
+			let arrShipResponse = { };
+			for (var i = 0; i < Object.keys(prodarr).length; i++) {
+
+				processShipment(prodarr[i].quantity, prodarr[i].prodId);
+				if(prodarr[i].inventory - prodarr[i].quantity >= 0) {
+					arrShipResponse[i] = {
+						prodName: `${prodarr[i].prodName}`,
+						prodId: prodarr[i].prodId,
+						quantity: prodarr[i].quantity,
+						prevInventory: prodarr[i].inventory,
+						newInventory: (prodarr[i].inventory - prodarr[i].quantity),
+						status: (prodarr[i].inventory - prodarr[i].quantity >= 0) ? true : false
+					}
+				} else {
+					arrShipResponse[i] = {
+						prodName: `${prodarr[i].prodName}`,
+						status: false
+					}
+					break;
+				}
+			}
+			if (await arrShipResponse[Object.keys(arrShipResponse).length -1].status) {
+				await sql.connect(db).then(pool => {
+					return pool.request()
+								.input('order', sql.Int, shipId)
+								.input('date', sql.DateTime, moment().format('YYYY-MM-DD HH:mm:ss.S'))
+								.input('desc', sql.VarChar, 'Order was processed')
+								.query`INSERT INTO shipment(orderId, shipmentDate, shipmentDesc, warehouseId) VALUES (@order, @date, @desc, 1)`
+				}).catch(err => {
+					console.log(err);
+				});
+			} else {
+				for (var i = 0; i < Object.keys(arrShipResponse).length; i++) {
+					await sql.connect(db).then(pool => {
+						return pool.request()
+									.input('prod', sql.Int, arrShipResponse[i].prodId)
+									.input('prev', sql.Int, arrShipResponse[i].prevInventory)
+									.query`UPDATE productinventory SET quantity = @prev WHERE productId = @prod`
+					}).catch(err => {
+						console.log(err);
+					});
+				}
+			}
+			res.status(200).send({ data: { status: 200, ship: arrShipResponse, status: arrShipResponse[Object.keys(arrShipResponse).length - 1].status}});
+		}
+	},
+	async loadShipments(_, res) {
 		let shipments = {};
 		await sql.connect(db.sqlConfig).then(pool => {
 			return sql.query`SELECT orderId, orderDate, ordersummary.customerId, customer.firstName, customer.lastName, totalAmount FROM ordersummary JOIN customer ON ordersummary.customerId = customer.customerId
@@ -176,7 +322,7 @@ module.exports = {
 		const listLengthBool = (Object.keys(shipments).length) ? true : false;
 		res.status(200).render('adminShipmentPage', { title: 'Shipments', isEmptyList: listLengthBool, shipment: shipments });
 	},
-	async loadSales(req, res) {		
+	async loadSales(_, res) {		
 		let sales = {};
 		await sql.connect(db.sqlConfig).then(pool => {
 			return sql.query('SELECT CAST(orderDate AS DATE) as dateField, SUM(totalAmount) as tAmount, COUNT(orderId) as totalOrders FROM ordersummary GROUP BY CAST(orderDate AS DATE)');

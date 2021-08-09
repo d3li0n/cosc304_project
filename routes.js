@@ -123,9 +123,9 @@ router.get('/admin/users', adminController.loadUsers);
 
 router.get('/admin/shipments', adminController.loadShipments);
 
-router.get('/admin/shipments/:id', (req, res) => {
-	res.status(200).render('adminShipPage', { title: 'Ship Page' });
-});
+router.get('/admin/shipments/:id', adminController.loadShipment);
+
+router.post('/admin/ship/:id', adminController.ship);
 
 router.get('/admin/orders', adminController.loadOrders );
 
