@@ -212,3 +212,6 @@ INSERT INTO orderproduct (orderId, productId, quantity, price) VALUES (@orderId,
 
 ALTER TABLE customer ADD isAdmin BIT NOT NULL DEFAULT(0);
 UPDATE customer SET isAdmin = 1 WHERE customerId = 2;
+
+ALTER TABLE productinventory
+ADD CONSTRAINT CH_CheckForNegative CHECK(quantity >=0);
