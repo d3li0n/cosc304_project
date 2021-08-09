@@ -231,4 +231,56 @@ $(document).ready(function () {
 			}
 		});
 	});
+
+	$('#btnRestoreForm').click(function(e) {  
+		$.ajax({
+			type: "POST",
+			url: '/restore',
+			data: {
+				email: $('.emailRestore').val(),
+			},
+			dataType: 'application/json',
+			success: function (response) {
+			}, error: function (err) {
+				let response = JSON.parse(err.responseText);
+
+				if (parseInt(response.data.status) === 403 || parseInt(response.data.status) === 401) {
+					$(".log-err").text(response.data.message);
+					$(".log-err").show();
+				} else {
+					$(".restore-block-page").hide();
+					$(".linkRestore").attr('href', `/restore/${response.data.link}`)
+					$(".restoreToken").text(`naturly.herokuapp.com/restore/${response.data.link}`)
+					$(".restore-block-page-success").show();
+				}
+			}
+		});
+	});
+	$('#btnRestoreFinalForm').click(function(e) { 
+		const pathArray = window.location.pathname.split('/'); 
+		$.ajax({
+			type: "PUT",
+			url: `/restore/${pathArray[2]}`,
+			data: {
+				password: $('.newPasswordRestore').val(),
+				confirmPassword: $('.newPasswordConfirmRestore').val(),
+			},
+			dataType: 'application/json',
+			success: function (response) {
+			}, error: function (err) {
+				let response = JSON.parse(err.responseText);
+
+				if (parseInt(response.data.status) === 403 || parseInt(response.data.status) === 401) {
+					$(".log-err").text(response.data.message);
+					$(".log-err").show();
+				} else if (parseInt(response.data.status) === 100) {
+					window.location.href = '/restore';
+				} else {
+					$(".restore-block-page-final").hide();
+					$(".restore-block-page-confirmed-final").show();
+					setTimeout(function(){ window.location = '/login'; }, 4000);
+				}
+			}
+		});
+	});
 });

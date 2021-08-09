@@ -3,7 +3,9 @@ const sql = require('mssql');
 const db = require('../dbconfig');
 const moment = require('moment');
 
-var emailRegex = /^[-!#$%&'*+\/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/;
+const emailRegex = /^[-!#$%&'*+\/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/;
+const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
 function isEmailValid(email) {
 	if (!email)
 			return false;
@@ -25,6 +27,14 @@ function isEmailValid(email) {
 			return false;
 
 	return true;
+}
+function generateString() {
+	let result = '';
+	const charactersLength = characters.length;
+	for ( let i = 0; i < 20; i++ ) {
+		result += characters.charAt(Math.floor(Math.random() * charactersLength));
+	}
+	return result;
 }
 
 module.exports = {
@@ -100,6 +110,126 @@ module.exports = {
 			console.log(err);
 		});	
 		res.status(200).send({ data: { status: 200, message: "Success: Account created." }});
+	},
+	restoreLoad(req, res) {
+		if (req.session.API_TOKEN !== undefined)
+			res.status(301).redirect("/account");
+		else 
+			res.status(200).render('restorePage', { title: 'Restore'});
+	},
+	async restoreCreate(req, res) {
+		if (req.session.API_TOKEN !== undefined) {
+			res.status(403).send({ data: { status: 403, message: "Error: Forbidden." }});
+		} else {
+			const email = `${req.body.email}`;
+			if (!isEmailValid(email))  {
+				res.status(401).send({ data: { status: 401, message: "Error: Email is not valid." }});
+			} else {
+				await sql.connect(db.sqlConfig).then(pool => {
+					return pool.request()
+							.input('email', sql.VarChar, email)
+							.query('SELECT customerId FROM customer WHERE email = @email');
+				}).then(result => {
+					if(result.rowsAffected[0] === 0) {
+						res.status(401).send({ data: { status: 401, message: "Error: Email doesn't exist." }});
+					} else {
+						const token = `${generateString()}`;
+						const expiryDate = moment().add(15, 'minutes').format('YYYY-MM-DD HH:mm:ss.S');
+						sql.connect(db.sqlConfig).then(pool => {
+							return pool.request()
+									.input('custId', sql.Int, result.recordset[0].customerId)
+									.input('token', sql.VarChar, token)
+									.input('expiry', sql.DateTime, expiryDate)
+									.query('INSERT INTO token(customerId, token, expiresAt) VALUES(@custId, @token, @expiry);');
+						}).then(result => {
+							res.status(200).send({ data: { status: 200, message: "Success.", link: `${token}` }});
+						}).catch(err => {
+							console.log(err);
+							res.status(403).send({ data: { status: 403, message: "Error: Invalid Statement."}});
+						});
+					}
+				}).catch(err => {
+					console.log(err);
+				});	
+			}
+		}
+	},
+	async restoreLoadForm(req, res) {
+		if (req.session.API_TOKEN !== undefined)
+			res.status(301).redirect("/account");
+		else {
+			const token = `${req.params.token}`;
+			if (token.length < 20) {
+				res.status(301).redirect("/account");
+			} else {
+				await sql.connect(db.sqlConfig).then(pool => {
+					return pool.request()
+							.input('token', sql.VarChar, token)
+							.query('SELECT expiresAt, isUsed FROM token WHERE token = @token');
+				}).then(result => {
+					
+					if (result.rowsAffected[0] === 0) {
+						res.status(301).redirect("/account");
+					} else if (result.recordset[0].isUsed !== false) {
+						res.status(301).redirect("/account");
+					} else if (moment() >= moment(result.recordset[0].expiresAt)) {
+						res.status(301).redirect("/account");
+					} else {
+						res.status(200).render('restoreConfirmationPage', { title: 'Restore Confirmation'});
+					}
+				}).catch(err => {
+					console.log(err);
+				});	
+			}
+		}
+	},
+	async restoreConfirm(req, res) {
+		if (req.session.API_TOKEN !== undefined) {
+			res.status(403).send({ data: { status: 403, message: "Error: Forbidden." }});
+		} else {
+			const token = `${req.params.token}`;
+			const password = `${req.body.password}`;
+			const confirmPassword = `${req.body.confirmPassword}`;
+
+			if (token.length < 20) {
+				res.status(403).send({ data: { status: 403, message: "Error: Forbidden." }});
+			}
+			else if (password.length < 2 || confirmPassword < 2) {
+				res.status(403).send({ data: { status: 403, message: "Error: Password must be longer than 1 character." }});
+			}
+			else if (password !== confirmPassword) {
+				res.status(403).send({ data: { status: 403, message: "Error: Passwords don't match." }});
+			}
+			else {
+				await sql.connect(db.sqlConfig).then(pool => {
+					return pool.request()
+							.input('token', sql.VarChar, token)
+							.query('SELECT customerId, expiresAt, isUsed FROM token WHERE token = @token');
+				}).then(result => {
+					
+					if (result.rowsAffected[0] === 0) {
+						res.status(403).send({ data: { status: 100 }});
+					} else if (result.recordset[0].isUsed !== false) {
+						res.status(403).send({ data: { status: 100 }});
+					} else if (moment() >= moment(result.recordset[0].expiresAt)) {
+						res.status(403).send({ data: { status: 100 }});
+					} else {
+						sql.connect(db.sqlConfig).then(pool => {
+							return pool.request()
+									.input('token', sql.VarChar, token)
+									.input('custId', sql.Int, result.recordset[0].customerId)
+									.input('password', sql.VarChar, password)
+									.query('UPDATE token SET isUsed = 1 WHERE token = @token; UPDATE customer SET password = @password WHERE customerId = @custId');
+						}).catch(err => {
+							console.log(err);
+						});
+						res.status(200).send({ data: { status: 200, message: "Success: Information updated." }});
+					}
+				}).catch(err => {
+					console.log(err);
+				});
+			}
+		}
 	},
 	registerLoad(req, res) {
 		if (req.session.API_TOKEN !== undefined)

@@ -249,7 +249,7 @@ a {
 	background-image: url('/images/bg-register.jpg');
 }
 
-.btnRegister {
+.btnRegister, .btnRestore {
 	background-color: #F3E5F5;
 
 	box-sizing: border-box;
@@ -259,6 +259,6 @@ a {
 	font-weight: 400;
 }
 
-#btnRegisterForm {
+#btnRegisterForm, #btnRestoreForm {
 	border-radius: 10px !important;
 }

@@ -83,6 +83,11 @@ router.get('/account/orders', userController.getOrders);
 router.get('/register', userController.registerLoad);
 router.post('/register', userController.register);
 
+router.get('/restore', userController.restoreLoad);
+router.post('/restore', userController.restoreCreate);
+router.get('/restore/:token', userController.restoreLoadForm);
+router.put('/restore/:token', userController.restoreConfirm);
+
 router.get('/login', (req, res) => {
 	if (req.session.API_TOKEN === undefined) {
 		res.status(200).render('loginPage', { title: 'Login' }); 
