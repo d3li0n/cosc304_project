@@ -155,7 +155,44 @@ module.exports = {
 
 		res.status(200).render('adminUsersPage', { title: 'Users', isEmptyList: listLengthBool, users: users });
 	},
-	async loadShipments(req, res) {
+	async loadShipment(req, res) {
+		const shipId = parseInt(req.params.id);
+		let shipArr = {};
+		if (shipId < 1)
+			res.status(301).redirect('/admin');
+		else {
+			await sql.connect(db).then(pool => {
+				return pool.request()
+							.input('order', sql.Int, shipId)
+							.query`SELECT orderproduct.orderId, orderDate, firstName, lastName, customer.phonenum, product.productId,
+				totalAmount, quantity, shiptoAddress, shiptoCity, shiptoState, shiptoPostalCode, shiptoCountry, product.productName FROM ordersummary
+				JOIN orderproduct ON orderproduct.orderId = ordersummary.orderId JOIN product ON product.productId = orderproduct.productId JOIN customer ON customer.customerId = ordersummary.customerId WHERE ordersummary.orderId = @order AND shiptoAddress IS NOT NULL AND shiptoCity IS NOT NULL AND shiptoState IS NOT NULL AND shiptoPostalCode IS NOT NULL AND shiptoCountry IS NOT NULL ORDER BY orderDate DESC`
+			}).then(result => {
+				if (result.rowsAffected[0] === 0) {
+					res.status(301).redirect('/admin');
+				} else {
+					shipArr = {
+						name: `${result.recordset[0].firstName} ${result.recordset[0].lastName}`,
+						address: `${result.recordset[0].shiptoAddress}, ${result.recordset[0].shiptoCity}, ${result.recordset[0].shiptoState}, ${result.recordset[0].shiptoPostalCode}, ${result.recordset[0].shiptoCountry}`,
+						phone: `${result.recordset[0].phonenum}`,
+						amount: (result.recordset[0].totalAmount).toFixed(2),
+						products: {}
+					};
+					for(var i = 0; i < result.rowsAffected; i++) {
+						shipArr.products[i] = {
+							name: result.recordsets[0][i].productName,
+							prodId: result.recordsets[0][i].productId,
+							quantity: result.recordsets[0][i].quantity
+						};
+					}
+					res.status(200).render('adminShipPage', { title: 'Ship Page', ship: shipArr });
+				}
+			}).catch(err => {
+				console.log(err);
+			});
+		}
+	},
+	async loadShipments(_, res) {
 		let shipments = {};
 		await sql.connect(db.sqlConfig).then(pool => {
 			return sql.query`SELECT orderId, orderDate, ordersummary.customerId, customer.firstName, customer.lastName, totalAmount FROM ordersummary JOIN customer ON ordersummary.customerId = customer.customerId
@@ -176,7 +213,7 @@ module.exports = {
 		const listLengthBool = (Object.keys(shipments).length) ? true : false;
 		res.status(200).render('adminShipmentPage', { title: 'Shipments', isEmptyList: listLengthBool, shipment: shipments });
 	},
-	async loadSales(req, res) {		
+	async loadSales(_, res) {		
 		let sales = {};
 		await sql.connect(db.sqlConfig).then(pool => {
 			return sql.query('SELECT CAST(orderDate AS DATE) as dateField, SUM(totalAmount) as tAmount, COUNT(orderId) as totalOrders FROM ordersummary GROUP BY CAST(orderDate AS DATE)');

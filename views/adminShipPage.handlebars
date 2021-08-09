@@ -31,7 +31,7 @@
 						Customer Name:
 					</div>
 					<div class="col-sm-6 d-block fw-bold">
-						Bobby Brown
+						{{ ship.name }}
 					</div>
 				</div>
 				<div class="row mb-4">
@@ -39,7 +39,7 @@
 						Customer Address:
 					</div>
 					<div class="col-sm-6 d-block fw-bold">
-						222 Bush Avenue, Boston, MA, 22222, United States
+						{{ ship.address }}
 					</div>
 				</div>
 				<div class="row mb-4">
@@ -47,7 +47,7 @@
 						Customer Phone:
 					</div>
 					<div class="col-sm-6 d-block fw-bold">
-						572-342-8911
+						{{ ship.phone }}
 					</div>
 				</div>
 				<div class="row mb-4">
@@ -55,7 +55,7 @@
 						Total Amount:
 					</div>
 					<div class="col-sm-6 d-block fw-bold">
-						$10000.23
+						${{ ship.amount }}
 					</div>
 				</div>
 				<div class="row mb-4">
@@ -63,13 +63,9 @@
 						Order:
 					</div>
 					<div class="col-sm-6 d-block fw-bold">
-						<span>Tasty Cookies - 3</span><br/>
-						<span>Tasty Cookies - 3</span><br/>
-						<span>Tasty Cookies - 3</span><br/>
-						<span>Tasty Cookies - 3</span><br/>
-						<span>Tasty Cookies - 3</span><br/>
-						<span>Tasty Cookies - 3</span><br/>
-						<span>Tasty Cookies - 3</span><br/>
+						{{#each ship.products }}
+						<span>{{ this.name }} - {{ this.quantity }}</span><br/>
+						{{/each}}
 					</div>
 				</div>
 			</div>
