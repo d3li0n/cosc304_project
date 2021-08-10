@@ -30,28 +30,34 @@
 	<div class="product-review-title mt-5">
 		<p class="text-default fw-bold fs-4">Product Reviews</p>
 	</div>
-	<div class="row mt-3">
-		{{#each reviews }}
-		<div class="col-sm-12 mb-4 py-2 product-review-block">
-			<div class="d-block product-review-block-header">
-				<div class="customer-icon d-inline-flex align-items-center">
-					<div class="customer-login-icon pe-3">
-						<i class="fas fa-user fs-2"></i>
-					</div>
-					<div class="customer-login-text">
-						<span class="product-review-block-header-customer fw-bold text-dark">{{this.customerName}}</span><span class="text-secondary"> - </span><span class="product-review-block-header-date text-secondary">{{this.dateReview}}</span>
-						<div class="d-block">
-							{{#each this.stars}}
-							<span class="product-review-block-header-star"><i class="fas fa-star text-warning"></i></span>
-							{{/each}}
+	{{#if isEmpty }}
+		<div class="empty-errList mt-3">
+			<p class="fw-bold fs-5">Currently, we don't have any reviews for this product. 😥</p>
+		</div>
+	{{else}}
+		<div class="row mt-3">
+			{{#each reviews }}
+			<div class="col-sm-12 mb-4 py-2 product-review-block">
+				<div class="d-block product-review-block-header">
+					<div class="customer-icon d-inline-flex align-items-center">
+						<div class="customer-login-icon pe-3">
+							<i class="fas fa-user fs-2"></i>
+						</div>
+						<div class="customer-login-text">
+							<span class="product-review-block-header-customer fw-bold text-dark">{{this.customerName}}</span><span class="text-secondary"> - </span><span class="product-review-block-header-date text-secondary">{{this.dateReview}}</span>
+							<div class="d-block">
+								{{#each this.stars}}
+								<span class="product-review-block-header-star"><i class="fas fa-star text-warning"></i></span>
+								{{/each}}
+							</div>
 						</div>
 					</div>
 				</div>
+				<div class="d-block prdouct-rewiev-comment mt-2">
+					{{this.review}}
+				</div>
 			</div>
-			<div class="d-block prdouct-rewiev-comment mt-2">
-				{{this.review}}
-			</div>
+			{{/each}}
 		</div>
-		{{/each}}
-	</div>
+	{{/if}}
 </div>
