@@ -4,10 +4,7 @@ const cartController = require('./controllers/CartController');
 const userController = require('./controllers/UserController');
 const storeController = require('./controllers/StoreController');
 const adminController = require('./controllers/AdminController');
-
-//const fs = require('fs');
-//const path = require('path');
-
+const productController = require('./controllers/ProductController');
 router.get('/', (req, res) => {
 	res.status(200).render('index', { title: 'Home' });
 });
@@ -41,53 +38,7 @@ router.get('/cart/checkout', cartController.cartCheckout);
 
 router.post('/product/:id/addCart', cartController.addProduct);
 
-router.get('/product/:id', (req, res) => {
-	
-	/* temporary solution
-	await sql.connect(sqlConfig).then(() => {
-			return sql.query`SELECT cast(productImage as nvarchar(max)) as image from product where productId = 1`
-		}).then(result => {
-			console.log(result);
-		}).catch(err => {
-			console.log(err);
-		});
-	const file = fs.readFileSync(path.join(__dirname,'/public/images/store_images/fire_1.jpg'));
-
-	const base64String = Buffer.from(file).toString('base64');
-	console.log(base64String);
-	*/
-
-	const product = {
-		productId: req.params.id,
-		productTitle: 'Chais',
-		productCategory: 'Beverages',
-		productDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut',
-		productPrice: (18.00).toFixed(2),
-		imageUrl: 'fire_ash_1.jpg',
-		image: base64String
-	};
-	const reviewList = {
-		1: {
-			customerName: 'Bobby Brown',
-			dateReview: '2020-20-10',
-			stars: [1,2,3,4,5],
-			review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-		},
-		2: {
-			customerName: 'Bobby S',
-			dateReview: '2020-20-3',
-			stars: [1,2],
-			review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-		},
-		3: {
-			customerName: 'Bobby Fox',
-			dateReview: '2020-5-10',
-			stars: [1,2,3],
-			review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-		}
-	};
-	res.status(200).render('productPage', { title: 'Product', reviews: reviewList, product: product });
-});
+router.get('/product/:id', productController.getProductInfo);
 
 router.get('/account', userController.validateApiToken, userController.getUser);
 
