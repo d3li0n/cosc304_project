@@ -3,6 +3,7 @@ const router = express.Router();
 const cartController = require('./controllers/CartController');
 const userController = require('./controllers/UserController');
 const storeController = require('./controllers/StoreController');
+const productController = require('./controllers/ProductController');
 const adminOrderController = require('./controllers/AdminOrderController');
 
 router.get('/', (req, res) => {
@@ -38,7 +39,9 @@ router.get('/cart/checkout', cartController.cartCheckout);
 
 router.post('/product/:id/addCart', cartController.addProduct);
 
-router.get('/product/:id', (req, res) => {
+router.get('/product/:id', productController.getProductInfo);
+
+/*router.get('/product/:id', (req, res) => {
 	const product = {
 		productId: req.params.id,
 		productTitle: 'Chais',
@@ -69,7 +72,7 @@ router.get('/product/:id', (req, res) => {
 		}
 	};
 	res.status(200).render('productPage', { title: 'Product', reviews: reviewList, product: product });
-});
+});*/
 
 router.get('/account', userController.validateApiToken, (req, res) => {
 
