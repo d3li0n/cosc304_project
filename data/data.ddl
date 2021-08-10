@@ -156,16 +156,15 @@ INSERT INTO category(categoryName) VALUES ('Air');
 INSERT INTO category(categoryName) VALUES ('Water');
 
 
-
-INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Camp Fire', 1, 'Fire from a premium camping location', 'fire_3.jpg', 145.00);
-INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Blue Flame', 1, 'The hottest fire known to man', 'fire_2.jpg', 439.00);
-INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Rain Forest Earth', 2, 'Dirt from the Amazon rain forest', 'earth_1.jpg', 124.00);
-INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Canyon Earth', 2, 'Dirt from the depths of a secret canyon', 'earth_4.jpg', 389.00);
-INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Cloud Air', 3, 'Air from the height of clouds', 'air_1.jpg', 89.75);
-INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Artic Air', 3, 'Air from the mountains in the Artic', 'air_2.jpg', 279.00);
-INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Clean Water', 4, 'Fresh water from secluded lakes', 'water_1.jpg', 176.00);
-INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Pure Water', 4, 'Purest water from icebergs in the north', 'water_4.jpg', 176.00);
-INSERT product(productName, categoryId, productDesc, productImageURL, productPrice) VALUES ('Fiji Water Bottle', 4, 'Bottle of water picked from mountain Fiji.', 'water_5.jpg', 5376.23);
+INSERT product(productName, categoryId, productDesc, productImageURL, productImage, productPrice) VALUES ('Camp Fire', 1, 'Fire from a premium camping location', 'fire_3.jpg', CAST(N'fire_1.jpg' as VARBINARY), 145.00);
+INSERT product(productName, categoryId, productDesc, productImageURL, productImage, productPrice) VALUES ('Blue Flame', 1, 'The hottest fire known to man', 'fire_2.jpg', CAST(N'fire_4.jpg' as VARBINARY), 439.00);
+INSERT product(productName, categoryId, productDesc, productImageURL, productImage, productPrice) VALUES ('Rain Forest Earth', 2, 'Dirt from the Amazon rain forest', 'earth_1.jpg', CAST(N'earth_2.jpg' as VARBINARY), 124.00);
+INSERT product(productName, categoryId, productDesc, productImageURL, productImage, productPrice) VALUES ('Canyon Earth', 2, 'Dirt from the depths of a secret canyon', 'earth_4.jpg', CAST(N'earth_3.jpg' as VARBINARY), 389.00);
+INSERT product(productName, categoryId, productDesc, productImageURL, productImage, productPrice) VALUES ('Cloud Air', 3, 'Air from the height of clouds', 'air_1.jpg', CAST(N'air_3.jpg' as VARBINARY), 89.75);
+INSERT product(productName, categoryId, productDesc, productImageURL, productImage, productPrice) VALUES ('Artic Air', 3, 'Air from the mountains in the Artic', 'air_2.jpg', CAST(N'air_4.jpg' as VARBINARY), 279.00);
+INSERT product(productName, categoryId, productDesc, productImageURL, productImage, productPrice) VALUES ('Clean Water', 4, 'Fresh water from secluded lakes', 'water_1.jpg', CAST(N'water_2.jpg' as VARBINARY), 176.00);
+INSERT product(productName, categoryId, productDesc, productImageURL, productImage, productPrice) VALUES ('Pure Water', 4, 'Purest water from icebergs in the north', 'water_4.jpg', CAST(N'water_3.jpg' as VARBINARY), 176.00);
+INSERT product(productName, categoryId, productDesc, productImageURL, productImage, productPrice) VALUES ('Fiji Water Bottle', 4, 'Bottle of water picked from mountain Fiji.', 'water_5.jpg', CAST(N'water_6.jpg' as VARBINARY), 5376.23);
 
     
 INSERT INTO customer (firstName, lastName, email, phonenum, address, city, state, postalCode, country, userid, password) VALUES ('Arnold', 'Anderson', 'a.anderson@gmail.com', '204-111-2222', '103 AnyWhere Street', 'Winnipeg', 'MB', 'R3X 45T', 'Canada', 'arnold' , 'test');
@@ -225,4 +224,3 @@ INSERT INTO productinventory (productId,warehouseId,quantity,price) VALUES (6,1,
 INSERT INTO productinventory (productId,warehouseId,quantity,price) VALUES (7,1,2,176)
 INSERT INTO productinventory (productId,warehouseId,quantity,price) VALUES (8,1,4,176)
 INSERT INTO productinventory (productId,warehouseId,quantity,price) VALUES (9,1,3,5376.23);
-

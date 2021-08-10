@@ -5,6 +5,9 @@ const userController = require('./controllers/UserController');
 const storeController = require('./controllers/StoreController');
 const adminController = require('./controllers/AdminController');
 
+//const fs = require('fs');
+//const path = require('path');
+
 router.get('/', (req, res) => {
 	res.status(200).render('index', { title: 'Home' });
 });
@@ -39,6 +42,21 @@ router.get('/cart/checkout', cartController.cartCheckout);
 router.post('/product/:id/addCart', cartController.addProduct);
 
 router.get('/product/:id', (req, res) => {
+	
+	/* temporary solution
+	await sql.connect(sqlConfig).then(() => {
+			return sql.query`SELECT cast(productImage as nvarchar(max)) as image from product where productId = 1`
+		}).then(result => {
+			console.log(result);
+		}).catch(err => {
+			console.log(err);
+		});
+	const file = fs.readFileSync(path.join(__dirname,'/public/images/store_images/fire_1.jpg'));
+
+	const base64String = Buffer.from(file).toString('base64');
+	console.log(base64String);
+	*/
+
 	const product = {
 		productId: req.params.id,
 		productTitle: 'Chais',
@@ -46,7 +64,7 @@ router.get('/product/:id', (req, res) => {
 		productDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut',
 		productPrice: (18.00).toFixed(2),
 		imageUrl: 'fire_ash_1.jpg',
-		image: 'wilsontheball.jpg'
+		image: base64String
 	};
 	const reviewList = {
 		1: {
