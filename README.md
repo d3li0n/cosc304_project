@@ -14,9 +14,9 @@
 > - `listorder.js` is now controlled by `AdminController.js` an only accessible by the following URL(need to be authorized to access this page) http://naturly.herokuapp.com/admin/orders
 > - `loaddata.js` is now controlled by `AdminController.js` an only accessible by the following URL(need to be authorized to access this page) http://naturly.herokuapp.com/admin/connection
 > - `routes.js` handles all the routing of the website whenever a link is clicked or a page is called.
-> - `controllers/StoreController.js` maintains the store page: http://naturly.herokuapp.com/store , which accesses the database and grabs the products and their corresponding prices/images.
-> - `controllers/ProductController.js` maintains the product page: http://naturly.herokuapp.com/products/{product id} , which accesses the database and grabs the product information(price, category, name, images, description), reviews for the product
-> 	- The search function is implemented by the method `getProducts`.
+> - `controllers/StoreController.js` maintains the store page: http://naturly.herokuapp.com/store , which accesses the database and grabs the products and their corresponding prices/images(implemented by the method `getProducts`)
+> - `controllers/ProductController.js` maintains the product page: http://naturly.herokuapp.com/product/{product id} , which accesses the database and grabs the product information(price, category, name, images, description), reviews for the product
+> 	- The search function is implemented by the method `getProduct`.
 > - `controllers/CartController.js` controls the function of adding to the cart: http://naturly.herokuapp.com/cart, displaying items in the cart, and the checkout process.
 > 	- Maintains a record of what is in the cart for the session managed by `loadCart`.
 > 	- Displays the items and total amount of the order throught the method `addProduct`.
